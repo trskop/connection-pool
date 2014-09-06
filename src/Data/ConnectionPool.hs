@@ -31,9 +31,13 @@
 module Data.ConnectionPool
     (
     -- * Connection Pool
+    --
+    -- $connectionPool
       ConnectionPool
 
     -- * Constructing Connection Pool
+    --
+    -- $constructingConnectionPool
     , ResourcePoolParams
     , numberOfResourcesPerStripe
     , numberOfStripes
@@ -149,3 +153,44 @@ withUnixClientConnection (Internal.UnixConnectionPool pool) =
     Internal.withConnection pool . Internal.runUnixApp
 #endif
     -- !WINDOWS
+
+-- $connectionPool
+--
+-- For each supported protocol we have a 'ConnectionPool' data family instance
+-- that is tagged with supported protocol. Currently it can be either
+-- 'TcpClient' or 'UnixClient'. This way we are able to use same core
+-- implementation for both and only need to deviate from common code where
+-- necessary.
+--
+-- Under the hood we use 'Network.Socket.Socket' to represent connections and
+-- that limits possible implementations of 'ConnectionPool' instances to
+-- protocols supported by <http://hackage.haskell.org/package/network network>
+-- package.
+--
+-- Those interested in details should look in to
+-- "Data.ConnectionPool.Internal.ConnectionPool" and
+-- "Data.ConnectionPool.Internal.ConnectionPoolFamily" modules.
+
+-- $constructingConnectionPool
+--
+-- For each protocol we provide separate function that creates 'ConnectionPool'
+-- instance. For TCP clients it's 'createTcpClientPool' and for UNIX Socket
+-- clients it's 'createUnixClientPool' (not available on Windows).
+--
+-- To simplify things we provide 'ResourcePoolParams' data type that is
+-- accepted by concrete constructors of 'ConnectionPool' instances and it wraps
+-- all common connection pool parameters.
+--
+-- In example, to specify connection pool with 2 stripes with 8 connections in
+-- each stripe we can use:
+--
+-- @
+-- def & numberOfStripes .~ 2
+--     & numberOfResourcesPerStripe .~ 8
+-- @
+--
+-- Functions @&@ and @.~@ are defined by
+-- <http://hackage.haskell.org/package/lens lens> package, and 'def' is a
+-- method of 'Default' type class defined in
+-- <http://hackage.haskell.org/package/data-default-class data-default-class>
+-- package.
