@@ -50,12 +50,17 @@ module Data.ConnectionPool
     , createTcpClientPool
     , withTcpClientConnection
 
+#ifndef WINDOWS
+    -- Windows doesn't support UNIX Sockets.
+
     -- * UNIX Client Connection Pool
     , UnixClient
     , ClientSettingsUnix
     , AppDataUnix
     , createUnixClientPool
     , withUnixClientConnection
+#endif
+    -- !WINDOWS
     )
   where
 
