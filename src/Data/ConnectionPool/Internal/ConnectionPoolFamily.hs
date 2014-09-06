@@ -1,6 +1,9 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+#ifdef KIND_POLYMORPHIC_TYPEABLE
+{-# LANGUAGE StandaloneDeriving #-}
+#endif
 {-# LANGUAGE TypeFamilies #-}
 -- |
 -- Module:       $HEADER$
@@ -10,7 +13,8 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  non-portable (CPP, NoImplicitPrelude, TypeFamilies)
+-- Portability:  non-portable (CPP, DeriveDataTypeable, StandaloneDeriving,
+--               NoImplicitPrelude, TypeFamilies)
 --
 -- Module defines type family of connection pools that is later specialised
 -- using type tags (phantom types) to specialize implementation of underlying
@@ -37,7 +41,7 @@ module Data.ConnectionPool.Internal.ConnectionPoolFamily
     -- * Connection Pool Family
       ConnectionPool(..)
 
-    -- * Type Tags For Connection Pool Specialization
+    -- * Tags For Specialised Connection Pools
     , TcpClient
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
@@ -56,14 +60,15 @@ import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
 
 
 -- | Family of connection pools parametrised by transport protocol.
-data family ConnectionPool a
+data family ConnectionPool :: * -> *
+
 #ifdef KIND_POLYMORPHIC_TYPEABLE
-  deriving (Typeable)
+deriving instance Typeable ConnectionPool
 #endif
 
 -- | Type tag used to specialize connection pool for TCP clients.
 data TcpClient
-  deriving (Typeable)
+  deriving Typeable
 
 -- | Connection pool for TCP clients.
 newtype instance ConnectionPool TcpClient =
@@ -74,7 +79,7 @@ newtype instance ConnectionPool TcpClient =
 
 -- | Type tag used to specialize connection pool for UNIX Socket clients.
 data UnixClient
-  deriving (Typeable)
+  deriving Typeable
 
 -- | Connection pool for UNIX Socket clients.
 newtype instance ConnectionPool UnixClient =
