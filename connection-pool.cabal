@@ -93,12 +93,12 @@ library
 
   ghc-options:          -Wall
   if impl(ghc >= 6.8)
+    ghc-options:        -fwarn-tabs
+  if flag(pedantic)
     ghc-options:
-      -fwarn-tabs
       -fwarn-implicit-prelude
       -fwarn-missing-import-lists
-  if flag(pedantic)
-    ghc-options:        -Werror
+      -Werror
 
 source-repository head
   type:                 git
