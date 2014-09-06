@@ -15,6 +15,19 @@
 --
 -- Connection pools for TCP clients and UNIX Socket clients (not supported on
 -- Windows).
+--
+-- This package is built on top of
+-- <http://hackage.haskell.org/package/resource-pool resource-pool> and
+-- <http://hackage.haskell.org/package/streaming-commons streaming-commons>
+-- packages. The later allows us to use
+-- <http://hackage.haskell.org/package/conduit-extra conduit-extra> package
+-- for implementing TCP and UNIX Sockets clients. Package /conduit-extra/
+-- defines @appSource@ and @appSink@ based on abstractions from
+-- /streaming-commons/ package and they can be therefore reused. Difference
+-- between using /conduit-extra/ or /streaming-commons/ is that instead of
+-- using @runTCPClient@ (or its lifted variant @runGeneralTCPClient@ from
+-- /conduit-extra/) one would use 'withTcpClientConnection', and instead of
+-- @runUnixClient@ it would be 'withUnixClientConnection'.
 module Data.ConnectionPool
     (
     -- * Connection Pool
