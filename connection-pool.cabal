@@ -16,6 +16,9 @@ description:
   packages. The later allows us to use
   <http://hackage.haskell.org/package/conduit-extra conduit-extra> package
   for implementation of TCP or UNIX Sockets clients.
+  .
+  For examples and other details see documentation in "Data.ConnectionPool"
+  module.
 
 homepage:               https://github.com/trskop/connection-pool
 bug-reports:            https://github.com/trskop/connection-pool/issues
@@ -31,6 +34,7 @@ cabal-version:          >=1.10
 extra-source-files:
     README.md
   , ChangeLog.md
+  , example/*.hs
 
 flag pedantic
   description:
