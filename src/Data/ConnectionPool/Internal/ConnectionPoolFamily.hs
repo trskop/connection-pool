@@ -31,7 +31,7 @@
 -- This module doesn't depend on
 -- <http://hackage.haskell.org/package/streaming-commons streaming-commons> and
 -- other non-HaskellPlatform packages directly and it is only allowed to import
--- "Data.ConnectionPool.Internal.ConnectionPool" internal module ant nothing
+-- "Data.ConnectionPool.Internal.ConnectionPool" internal module and nothing
 -- else from this package. This package uses CPP to get OS specific things
 -- right. Most importantly Windows doesn't support UNIX Sockets.
 --
