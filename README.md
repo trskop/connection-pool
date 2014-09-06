@@ -118,7 +118,7 @@ that).
 
 [Hackage: conduit-extra]:
   http://hackage.haskell.org/package/conduit-extra
-[Hackage: connection-pool]
+[Hackage: connection-pool]:
   http://hackage.haskell.org/package/connection-pool
 [Hackage: resource-pool]:
   http://hackage.haskell.org/package/resource-pool
