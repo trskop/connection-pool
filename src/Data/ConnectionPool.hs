@@ -38,7 +38,7 @@ module Data.ConnectionPool
     )
   where
 
-import Control.Applicative (Const(Const, getConst), (<$>))
+import Control.Applicative ((<$>))
 import Data.Function ((.))
 import Data.Maybe (Maybe(Nothing))
 import System.IO (IO)
@@ -53,7 +53,7 @@ import Data.Streaming.Network
     -- Windows doesn't support UNIX Sockets.
     , AppDataUnix
     , ClientSettingsUnix
-    , HasPath(pathLens)
+    , getPath
     , getSocketUnix
 #endif
     -- !WINDOWS
@@ -120,9 +120,8 @@ createUnixClientPool
 createUnixClientPool poolParams unixParams = Internal.UnixConnectionPool
     <$> Internal.createConnectionPool acquire release poolParams
   where
-    acquire = (, ()) <$> getSocketUnix (unixParams ^. pathLens)
+    acquire = (, ()) <$> getSocketUnix (getPath unixParams)
     release = Socket.sClose
-    s ^. l = getConst (l Const s)
 
 withUnixClientConnection
     :: MonadBaseControl IO m
