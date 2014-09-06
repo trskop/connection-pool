@@ -131,6 +131,7 @@ import qualified Data.ConnectionPool.Internal.Streaming as Internal
     )
 
 
+-- | Create connection pool for TCP clients.
 createTcpClientPool
     :: ResourcePoolParams
     -> ClientSettings
@@ -141,6 +142,9 @@ createTcpClientPool poolParams tcpParams = Internal.TcpConnectionPool
     acquire = Internal.acquireTcpClientConnection tcpParams
     release = Socket.sClose
 
+-- | Temporarily take a TCP connection from a pool, run client with it, and
+-- return it to the pool afterwards. For details how connections are allocated
+-- see 'Data.Pool.withResource'.
 withTcpClientConnection
     :: MonadBaseControl IO m
     => ConnectionPool TcpClient
@@ -152,6 +156,7 @@ withTcpClientConnection (Internal.TcpConnectionPool pool) =
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
 
+-- | Create connection pool for UNIX Sockets clients.
 createUnixClientPool
     :: ResourcePoolParams
     -> ClientSettingsUnix
@@ -162,6 +167,9 @@ createUnixClientPool poolParams unixParams = Internal.UnixConnectionPool
     acquire = (, ()) <$> getSocketUnix (getPath unixParams)
     release = Socket.sClose
 
+-- | Temporarily take a UNIX Sockets connection from a pool, run client with
+-- it, and return it to the pool afterwards. For details how connections are
+-- allocated see 'Data.Pool.withResource'.
 withUnixClientConnection
     :: MonadBaseControl IO m
     => ConnectionPool UnixClient
