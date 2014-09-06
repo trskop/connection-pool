@@ -28,11 +28,15 @@ module Data.ConnectionPool
 
     -- * TCP Client Connection Pool
     , TcpClient
+    , ClientSettings
+    , AppData
     , createTcpClientPool
     , withTcpClientConnection
 
     -- * UNIX Client Connection Pool
     , UnixClient
+    , ClientSettingsUnix
+    , AppDataUnix
     , createUnixClientPool
     , withUnixClientConnection
     )
