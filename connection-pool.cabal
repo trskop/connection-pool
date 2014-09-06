@@ -1,7 +1,7 @@
 name:                   connection-pool
 version:                0.1.0.0
 synopsis:
-  Connection pool built on top of resource-pool and streaming-commons packages.
+  Connection pool built on top of resource-pool and streaming-commons.
 description:
   Connection poll is a family specialised resource pools. Currently package
   provides two
@@ -12,8 +12,8 @@ description:
   .
   This package is built on top of
   <http://hackage.haskell.org/package/resource-pool resource-pool> and
-  <http://hackage.haskell.org/package/streaming-commons streaming-commons>
-  packages. The later allows us to use
+  <http://hackage.haskell.org/package/streaming-commons streaming-commons>.
+  The later allows us to use
   <http://hackage.haskell.org/package/conduit-extra conduit-extra> package
   for implementation of TCP or UNIX Sockets clients.
   .
@@ -107,3 +107,8 @@ library
 source-repository head
   type:                 git
   location:             git://github.com/trskop/connection-pool.git
+
+source-repository this
+  type:                 git
+  location:             git://github.com/trskop/connection-pool.git
+  tag:                  v0.1.0.0

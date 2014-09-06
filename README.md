@@ -1,6 +1,8 @@
 Connection Pool
 ===============
 
+[![Hackage](https://budueba.com/hackage/connection-pool)][Hackage: connection-pool]
+
 
 Description
 -----------
@@ -11,9 +13,16 @@ provides two
 1. pool for TCP client connections,
 2. and pool for UNIX Sockets client connections.
 
-This package is built on top of [resource-pool][] and [streaming-commons][]
-packages. The later allows us to use [conduit-extra][] package for
-implementation of TCP or UNIX Sockets clients.
+This package is built on top of [resource-pool][] and [streaming-commons][].
+The later allows us to use [conduit-extra][] package for implementation of TCP
+or UNIX Sockets clients.
+
+
+Documentation
+-------------
+
+Stable releases with API documentation are available on
+[Hackage][Hackage: connection-pool]
 
 
 TCP Client Example
@@ -109,6 +118,8 @@ that).
 
 [conduit-extra]:
   http://hackage.haskell.org/package/conduit-extra
+[connection-pool]
+  http://hackage.haskell.org/package/connection-pool
 [resource-pool]:
   http://hackage.haskell.org/package/resource-pool
 [streaming-commons]:
