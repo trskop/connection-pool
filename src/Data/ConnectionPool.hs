@@ -210,12 +210,12 @@ withUnixClientConnection (Internal.UnixConnectionPool pool) =
 --     [port, numStripes, numPerStripe] <- getArgs
 --     pool <- 'createTcpClientPool'
 --         (poolParams numStripes numPerStripe)
---         (clientSettingsTCP (read port) "127.0.0.1")
+--         (clientSettingsTCP (read port) \"127.0.0.1\")
 --     void . forkIO . 'withTcpClientConnection' pool $ \\appData -> do
 --        threadDelay 100
---        appWrite appData "1: I'm alive!\\n"
+--        appWrite appData \"1: I'm alive!\\n\"
 --     void . forkIO . 'withTcpClientConnection' pool $ \\appData ->
---        appWrite appData "2: I'm alive!\\n"
+--        appWrite appData \"2: I'm alive!\\n\"
 --   where
 --     poolParams m n =
 --         def & 'numberOfStripes' .~ read m
@@ -293,9 +293,9 @@ withUnixClientConnection (Internal.UnixConnectionPool pool) =
 --         (clientSettingsUnix socket)
 --     void . forkIO . 'withUnixClientConnection' pool $ \\appData -> do
 --        threadDelay 100
---        appWrite appData "1: I'm alive!\\n"
+--        appWrite appData \"1: I'm alive!\\n\"
 --     void . forkIO . 'withUnixClientConnection' pool $ \\appData ->
---        appWrite appData "2: I'm alive!\\n"
+--        appWrite appData \"2: I'm alive!\\n\"
 --   where
 --     poolParams m n =
 --         def & 'numberOfStripes' .~ read m
