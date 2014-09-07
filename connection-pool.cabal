@@ -57,6 +57,7 @@ library
     , DeriveDataTypeable
     , FlexibleContexts
     , NoImplicitPrelude
+    , StandaloneDeriving
     , TupleSections
     , TypeFamilies
 
