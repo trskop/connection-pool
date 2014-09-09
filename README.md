@@ -1,7 +1,8 @@
 Connection Pool
 ===============
 
-[![Hackage](https://budueba.com/hackage/connection-pool)][Hackage: connection-pool]
+[![Hackage](http://img.shields.io/hackage/v/connection-pool.svg)
+][Hackage: connection-pool]
 
 
 Description
