@@ -1,5 +1,5 @@
 name:                   connection-pool
-version:                0.1.0.0
+version:                0.1.1.0
 synopsis:
   Connection pool built on top of resource-pool and streaming-commons.
 description:
