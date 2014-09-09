@@ -4,6 +4,7 @@
 ## Version 0.1.1.0
 
 * Introducing function `validateResourcePoolParams`. (new)
+* Introducing internal function `destroyAllConnections`. (new)
 * Corrected some typos in documentation and Haddock markup.
 * Small documentation enhancements.
 
