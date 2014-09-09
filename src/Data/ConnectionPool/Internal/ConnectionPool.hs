@@ -28,6 +28,7 @@
 module Data.ConnectionPool.Internal.ConnectionPool
     ( ConnectionPool(ConnectionPool)
     , createConnectionPool
+    , destroyAllConnections
     , withConnection
     )
   where
@@ -42,7 +43,11 @@ import Control.Monad.Trans.Control (MonadBaseControl)
 import Network.Socket (Socket)
 
 import Data.Pool (Pool)
-import Data.Pool as Pool (createPool, withResource)
+import qualified Data.Pool as Pool
+    ( createPool
+    , destroyAllResources
+    , withResource
+    )
 
 import Data.ConnectionPool.Internal.ResourcePoolParams (ResourcePoolParams)
 import qualified Data.ConnectionPool.Internal.ResourcePoolParams
@@ -86,3 +91,11 @@ withConnection
     -> m r
 withConnection (ConnectionPool pool) f =
     Pool.withResource pool (uncurry f)
+
+-- | Destroy all connections that might be still open in a connection pool.
+-- This is useful when one needs to release all resources at once and not to
+-- wait for idle timeout to be reached.
+--
+-- For more details see 'Pool.destroyAllResources'.
+destroyAllConnections :: ConnectionPool a -> IO ()
+destroyAllConnections (ConnectionPool pool) = Pool.destroyAllResources pool
