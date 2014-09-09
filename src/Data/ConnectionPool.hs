@@ -52,9 +52,18 @@ module Data.ConnectionPool
     --
     -- $constructingConnectionPool
     , ResourcePoolParams
+
+    -- ** Lenses
+    --
+    -- $resourcePoolParamsLenses
     , numberOfResourcesPerStripe
     , numberOfStripes
     , resourceIdleTimeout
+
+    -- ** Validation
+    --
+    -- $resourcePoolParamsValidation
+    , validateResourcePoolParams
 
     -- * TCP Client Connection Pool
     , TcpClient
@@ -119,6 +128,7 @@ import Data.ConnectionPool.Internal.ResourcePoolParams
     , numberOfResourcesPerStripe
     , numberOfStripes
     , resourceIdleTimeout
+    , validateResourcePoolParams
     )
 import qualified Data.ConnectionPool.Internal.Streaming as Internal
     ( acquireTcpClientConnection
@@ -202,7 +212,10 @@ withUnixClientConnection (Internal.UnixConnectionPool pool) =
 --     , 'withTcpClientConnection'
 --     )
 -- import Data.Default.Class (Default(def))
--- import Data.Streaming.Network (appWrite, clientSettingsTCP)
+-- import Data.Streaming.Network
+--     ( 'Data.Streaming.Network.appWrite'
+--     , 'Data.Streaming.Network.clientSettingsTCP'
+--     )
 --
 --
 -- main :: IO ()
@@ -210,12 +223,12 @@ withUnixClientConnection (Internal.UnixConnectionPool pool) =
 --     [port, numStripes, numPerStripe] <- getArgs
 --     pool <- 'createTcpClientPool'
 --         (poolParams numStripes numPerStripe)
---         (clientSettingsTCP (read port) \"127.0.0.1\")
+--         ('Data.Streaming.Network.clientSettingsTCP' (read port) \"127.0.0.1\")
 --     void . forkIO . 'withTcpClientConnection' pool $ \\appData -> do
 --        threadDelay 100
---        appWrite appData \"1: I'm alive!\\n\"
+--        'Data.Streaming.Network.appWrite' appData \"1: I'm alive!\\n\"
 --     void . forkIO . 'withTcpClientConnection' pool $ \\appData ->
---        appWrite appData \"2: I'm alive!\\n\"
+--        'Data.Streaming.Network.appWrite' appData \"2: I'm alive!\\n\"
 --   where
 --     poolParams m n =
 --         def & 'numberOfStripes' .~ read m
@@ -282,7 +295,10 @@ withUnixClientConnection (Internal.UnixConnectionPool pool) =
 --     , 'withUnixClientConnection'
 --     )
 -- import Data.Default.Class (Default(def))
--- import Data.Streaming.Network (appWrite, clientSettingsUnix)
+-- import Data.Streaming.Network
+--     ( 'Data.Streaming.Network.appWrite'
+--     , 'Data.Streaming.Network.clientSettingsUnix'
+--     )
 --
 --
 -- main :: IO ()
@@ -290,12 +306,12 @@ withUnixClientConnection (Internal.UnixConnectionPool pool) =
 --     [socket, numStripes, numPerStripe] <- getArgs
 --     pool <- 'createUnixClientPool'
 --         (poolParams numStripes numPerStripe)
---         (clientSettingsUnix socket)
+--         ('Data.Streaming.Network.clientSettingsUnix' socket)
 --     void . forkIO . 'withUnixClientConnection' pool $ \\appData -> do
 --        threadDelay 100
---        appWrite appData \"1: I'm alive!\\n\"
+--        'Data.Streaming.Network.appWrite' appData \"1: I'm alive!\\n\"
 --     void . forkIO . 'withUnixClientConnection' pool $ \\appData ->
---        appWrite appData \"2: I'm alive!\\n\"
+--        'Data.Streaming.Network.appWrite' appData \"2: I'm alive!\\n\"
 --   where
 --     poolParams m n =
 --         def & 'numberOfStripes' .~ read m
@@ -345,20 +361,65 @@ withUnixClientConnection (Internal.UnixConnectionPool pool) =
 -- instance. For TCP clients it's 'createTcpClientPool' and for UNIX Socket
 -- clients it's 'createUnixClientPool' (not available on Windows).
 --
+-- In each case two kinds of values need to be provided as parameters to such
+-- functions:
+--
+-- 1. Parameters of underlying resource pool like how to organize stripes and
+--    parameters for algorithm that handles resource releasing, etc.
+--
+-- 2. Transport protocol parameters like IP address, port, UNIX Socket file,
+--    and similar.
+--
 -- To simplify things we provide 'ResourcePoolParams' data type that is
 -- accepted by concrete constructors of 'ConnectionPool' instances and it wraps
--- all common connection pool parameters.
+-- all common connection pool parameters. And for protocol specific settings
+-- this package reuses data types from /streaming-commons/ library.
 --
--- In example, to specify connection pool with 2 stripes with 8 connections in
--- each stripe we can use:
+-- As a result, of the above, type signature of function that creates
+-- connection pool for some protocol named @MyProtocol@ could look like:
 --
 -- @
--- def & numberOfStripes .~ 2
---     & numberOfResourcesPerStripe .~ 8
+-- createMyProtocolPool
+--     :: 'ResourcePoolParams'
+--     -> MyProtocolParams
+--     -> 'IO' ('ConnectionPool' MyProtocol)
 -- @
 --
--- Functions @&@ and @.~@ are defined by
--- <http://hackage.haskell.org/package/lens lens> package, and 'def' is a
--- method of 'Default' type class defined in
--- <http://hackage.haskell.org/package/data-default-class data-default-class>
--- package.
+-- To further simplify things this package defines default value for
+-- 'ResourcePoolParams' using 'Data.Default.Class.Default' type class that has
+-- only one method named 'Data.Default.Class.def'. Instance of this class is
+-- declared using minimal possible values of each parameter required by
+-- underlying resource pool. In example, to specify connection pool with 2
+-- stripes with 8 connections in each stripe, but keeping connection idle
+-- timeout on its default value, we can simply use:
+--
+-- @
+-- 'Data.Default.Class.def' & 'numberOfStripes' .~ 2
+--     & 'numberOfResourcesPerStripe' .~ 8
+-- @
+--
+-- Where functions @&@ and @.~@ are defined by
+-- <http://hackage.haskell.org/package/lens lens> package.
+
+-- $resourcePoolParamsLenses
+--
+-- For details on how to use leses as these see
+-- <http://hackage.haskell.org/package/lens lens> package where you might find
+-- a good starting point documentation for you.
+
+-- $resourcePoolParamsValidation
+--
+-- Sometimes one needs to validate parameters as early as possible, e.g. while
+-- parsing command line options.
+--
+-- Usage example:
+--
+-- @
+-- 'validateResourcePoolParams' $ someParams
+--     & 'resourceIdleTimeout' .~ 1
+--     & 'numberOfResourcesPerStripe' .~ 16
+-- @
+--
+-- Most usually one would use 'Data.Default.def' instead of @someParams@.
+-- Functions @&@ and @.~@ are defined in
+-- <http://hackage.haskell.org/package/lens lens> package.

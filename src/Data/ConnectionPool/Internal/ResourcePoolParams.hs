@@ -1,5 +1,6 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE RecordWildCards #-}
 -- |
 -- Module:       $HEADER$
 -- Description:  Resource pool construction parameters.
@@ -8,7 +9,8 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  non-portable (NoImplicitPrelude, DeriveDataTypeable)
+-- Portability:  non-portable (DeriveDataTypeable, NoImplicitPrelude,
+--               RecordWildCards)
 --
 -- Internal packages are here to provide access to internal definitions for
 -- library writers, but they should not be used in application code.
@@ -21,7 +23,7 @@
 -- Surprisingly this module doesn't depend on
 -- <http://hackage.haskell.org/package/resource-pool resource-pool>
 -- package and it would be good if it stayed that way, but not at the cost of
--- cripling functionality.
+-- crippling functionality.
 --
 -- Importantly this package should not depend on
 -- <http://hackage.haskell.org/package/streaming-commons streaming-commons>
@@ -37,14 +39,24 @@ module Data.ConnectionPool.Internal.ResourcePoolParams
     , numberOfResourcesPerStripe
     , numberOfStripes
     , resourceIdleTimeout
+
+    -- ** Validation
+    , validateResourcePoolParams
     )
   where
 
+import Control.Monad (Monad(return))
+import Data.Bool (otherwise)
 import Data.Data (Data)
+import Data.Either (Either(Left, Right))
+import Data.Function (($))
 import Data.Functor (Functor)
 import Data.Int (Int)
+import Data.List ((++))
+import Data.Ord (Ord((<)))
 import Data.Typeable (Typeable)
-import Text.Show (Show)
+import Text.Show (Show(show))
+import Data.String (String)
 
 import Data.Time.Clock (NominalDiffTime)
 
@@ -99,3 +111,38 @@ numberOfResourcesPerStripe
     -> ResourcePoolParams -> f ResourcePoolParams
 numberOfResourcesPerStripe = _numberOfResourcesPerStripe ~@@^> \s b ->
     s {_numberOfResourcesPerStripe = b}
+
+
+-- | Check if all parameters for underlying resource pool are valid:
+--
+-- * @'numberOfStripes' >= 1@ Number of connection sub-pools. Keeping it set
+--   to @1@ is good for most applications.
+--
+-- * @'numberOfResourcesPerStripe' >= 1@ Maximum number of connections in each
+--   stripe. Totally there can be
+--   @'numberOfStripes' * 'numberOfResourcesPerStripe'@
+--   open connections simultaneously.
+--
+-- * @'resourceIdleTimeout' >= 0.5@ Property specified for how long connection
+--   will be kept alive after it is released by back to the pool before it is
+--   automatically closed. Value is in seconds.
+--
+-- For more details see 'Data.Pool.createPool'.
+validateResourcePoolParams
+    :: ResourcePoolParams
+    -- ^ Parameters to validate.
+    -> Either String ResourcePoolParams
+    -- ^ Either error message or the same value of 'ResourcePoolParams' passed
+    -- as a first argument.
+validateResourcePoolParams params'@ResourcePoolParams{..} = do
+    failIf _numberOfStripes (< 1)
+        "Stripe count has to be at least 1"
+    failIf _resourceIdleTimeout (< 0.5)
+        "Resource idle time has to be at least 0.5"
+    failIf _numberOfResourcesPerStripe (< 1)
+        "There has to be at least 1 resource per stripe"
+    return params'
+  where
+    failIf n p msg
+      | p n = Left $ msg ++ ", but got " ++ show n ++ "."
+      | otherwise = Right ()
