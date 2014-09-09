@@ -31,7 +31,7 @@ Examples
 --------
 
 Simple code examples, including example from the following section, are
-available in [examples/](examples/) directory.
+available in [example/](example/) directory.
 
 
 TCP Client Example
