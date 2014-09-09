@@ -4,7 +4,7 @@ synopsis:
   Connection pool built on top of resource-pool and streaming-commons.
 description:
   Connection poll is a family specialised resource pools. Currently package
-  provides two
+  provides two variants:
   .
   1. pool for TCP client connections,
   .
