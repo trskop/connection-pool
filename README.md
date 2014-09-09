@@ -27,6 +27,13 @@ Stable releases with API documentation are available on
 [Hackage][Hackage: connection-pool]
 
 
+Examples
+--------
+
+Simple code examples, including example from the following section, are
+available in [examples/](examples/) directory.
+
+
 TCP Client Example
 ------------------
 
@@ -107,6 +114,12 @@ the other thread also acquires connection and prints its output while the first
 thread is still blocked on `threadDelay`. This example demonstrates how
 connection pool behaves if it reached its capacity and when it has onough free
 resources.
+
+
+License
+-------
+
+The BSD 3-Clause License, see [LICENSE](LICENSE) file for details.
 
 
 Contributions
