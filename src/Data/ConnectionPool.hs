@@ -260,7 +260,7 @@ destroyAllUnixClientConnections (Internal.UnixConnectionPool pool) =
 --        'Data.Streaming.Network.appWrite' appData \"2: I'm alive!\\n\"
 --   where
 --     poolParams m n =
---         def & 'numberOfStripes' .~ read m
+--         'Data.Default.Class.def' & 'numberOfStripes' .~ read m
 --             & 'numberOfResourcesPerStripe' .~ read n
 -- @
 --
@@ -343,7 +343,7 @@ destroyAllUnixClientConnections (Internal.UnixConnectionPool pool) =
 --        'Data.Streaming.Network.appWrite' appData \"2: I'm alive!\\n\"
 --   where
 --     poolParams m n =
---         def & 'numberOfStripes' .~ read m
+--         'Data.Default.Class.def' & 'numberOfStripes' .~ read m
 --             & 'numberOfResourcesPerStripe' .~ read n
 -- @
 --
