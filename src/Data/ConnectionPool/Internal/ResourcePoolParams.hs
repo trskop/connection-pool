@@ -112,7 +112,6 @@ numberOfResourcesPerStripe
 numberOfResourcesPerStripe = _numberOfResourcesPerStripe ~@@^> \s b ->
     s {_numberOfResourcesPerStripe = b}
 
-
 -- | Check if all parameters for underlying resource pool are valid:
 --
 -- * @'numberOfStripes' >= 1@ Number of connection sub-pools. Keeping it set
@@ -128,6 +127,8 @@ numberOfResourcesPerStripe = _numberOfResourcesPerStripe ~@@^> \s b ->
 --   automatically closed. Value is in seconds.
 --
 -- For more details see 'Data.Pool.createPool'.
+--
+-- /Since version 0.1.1.0./
 validateResourcePoolParams
     :: ResourcePoolParams
     -- ^ Parameters to validate.
