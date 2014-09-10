@@ -57,13 +57,21 @@ import Network.Socket.ByteString (sendAll)
 import Data.Streaming.Network (getSocketFamilyTCP, safeRecv)
 import Data.Streaming.Network.Internal
     ( AppData(AppData)
+#ifndef WINDOWS
+    -- Windows doesn't support UNIX Sockets.
     , AppDataUnix(AppDataUnix)
+#endif
+    -- !WINDOWS
     , ClientSettings(ClientSettings)
     )
 import qualified Data.Streaming.Network.Internal as AppData
     (AppData(appLocalAddr', appRead', appSockAddr', appWrite'))
+#ifndef WINDOWS
+    -- Windows doesn't support UNIX Sockets.
 import qualified Data.Streaming.Network.Internal as AppDataUnix
     (AppDataUnix(appReadUnix, appWriteUnix))
+#endif
+    -- !WINDOWS
 
 -- | Wrapper for 'runTcpAppImpl' with a type signature that is more natural
 -- for implementing a TCP specific
