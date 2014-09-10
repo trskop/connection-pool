@@ -71,6 +71,7 @@ module Data.ConnectionPool
     , AppData
     , createTcpClientPool
     , withTcpClientConnection
+    , destroyAllTcpClientConnections
 
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
@@ -81,6 +82,7 @@ module Data.ConnectionPool
     , AppDataUnix
     , createUnixClientPool
     , withUnixClientConnection
+    , destroyAllUnixClientConnections
 #endif
     -- !WINDOWS
     )
@@ -119,6 +121,7 @@ import Data.ConnectionPool.Internal.ConnectionPoolFamily
 import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
     ( createConnectionPool
     , withConnection
+    , destroyAllConnections
     )
 import qualified Data.ConnectionPool.Internal.ConnectionPoolFamily as Internal
     ( ConnectionPool(..)
@@ -163,6 +166,12 @@ withTcpClientConnection
 withTcpClientConnection (Internal.TcpConnectionPool pool) =
     Internal.withConnection pool . Internal.runTcpApp Nothing
 
+destroyAllTcpClientConnections
+    :: ConnectionPool TcpClient
+    -> IO ()
+destroyAllTcpClientConnections (Internal.TcpConnectionPool pool) =
+    Internal.destroyAllConnections pool
+
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
 
@@ -187,6 +196,12 @@ withUnixClientConnection
     -> m r
 withUnixClientConnection (Internal.UnixConnectionPool pool) =
     Internal.withConnection pool . Internal.runUnixApp
+
+destroyAllUnixClientConnections
+    :: ConnectionPool UnixClient
+    -> IO ()
+destroyAllUnixClientConnections (Internal.UnixConnectionPool pool) =
+    Internal.destroyAllConnections pool
 #endif
     -- !WINDOWS
 
