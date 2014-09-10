@@ -97,5 +97,7 @@ withConnection (ConnectionPool pool) f =
 -- wait for idle timeout to be reached.
 --
 -- For more details see 'Pool.destroyAllResources'.
+--
+-- /Since version 0.1.1.0./
 destroyAllConnections :: ConnectionPool a -> IO ()
 destroyAllConnections (ConnectionPool pool) = Pool.destroyAllResources pool

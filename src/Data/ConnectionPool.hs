@@ -166,6 +166,13 @@ withTcpClientConnection
 withTcpClientConnection (Internal.TcpConnectionPool pool) =
     Internal.withConnection pool . Internal.runTcpApp Nothing
 
+-- | Destroy all TCP connections that might be still open in a connection pool.
+-- This is useful when one needs to release all resources at once and not to
+-- wait for idle timeout to be reached.
+--
+-- For more details see 'Pool.destroyAllResources'.
+--
+-- /Since version 0.1.1.0./
 destroyAllTcpClientConnections
     :: ConnectionPool TcpClient
     -> IO ()
@@ -197,6 +204,13 @@ withUnixClientConnection
 withUnixClientConnection (Internal.UnixConnectionPool pool) =
     Internal.withConnection pool . Internal.runUnixApp
 
+-- | Destroy all UNIX Sockets connections that might be still open in a
+-- connection pool. This is useful when one needs to release all resources at
+-- once and not to wait for idle timeout to be reached.
+--
+-- For more details see 'Pool.destroyAllResources'.
+--
+-- /Since version 0.1.1.0./
 destroyAllUnixClientConnections
     :: ConnectionPool UnixClient
     -> IO ()
