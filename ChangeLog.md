@@ -11,6 +11,8 @@
   `destroyAllConnections`. (new)
 * Corrected some typos in documentation and Haddock markup.
 * Small documentation enhancements.
+* Uploaded to [Hackage][]:
+  <http://hackage.haskell.org/package/connection-pool-0.1.1.0>
 
 
 ## Version 0.1.0.0

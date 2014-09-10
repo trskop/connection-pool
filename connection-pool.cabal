@@ -27,7 +27,7 @@ license-file:           LICENSE
 author:                 Peter Trško
 maintainer:             peter.trsko@gmail.com
 copyright:              (c) 2014 Peter Trško
-category:               Data
+category:               Data, Network
 build-type:             Simple
 cabal-version:          >=1.10
 
@@ -113,4 +113,4 @@ source-repository head
 source-repository this
   type:                 git
   location:             git://github.com/trskop/connection-pool.git
-  tag:                  v0.1.0.0
+  tag:                  v0.1.1.0
