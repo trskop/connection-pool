@@ -6,6 +6,9 @@
 * Package is now buildable on Windows. (new)
 * Introducing function `validateResourcePoolParams`. (new)
 * Introducing internal function `destroyAllConnections`. (new)
+* Introducing functions `destroyAllTcpClientConnections` and
+  `destroyAllTcpClientConnections` both build on top of
+  `destroyAllConnections`. (new)
 * Corrected some typos in documentation and Haddock markup.
 * Small documentation enhancements.
 
