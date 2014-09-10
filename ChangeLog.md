@@ -3,6 +3,7 @@
 
 ## Version 0.1.1.0
 
+* Package is now buildable on Windows. (new)
 * Introducing function `validateResourcePoolParams`. (new)
 * Introducing internal function `destroyAllConnections`. (new)
 * Corrected some typos in documentation and Haddock markup.
