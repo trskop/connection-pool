@@ -24,7 +24,7 @@
 --
 -- This module doesn't neither depend on
 -- <http://hackage.haskell.org/package/resource-pool resource-pool> package nor
--- any other module of this package, and it shoud stay that way. This package
+-- any other module of this package, and it shoud stay that way. This module
 -- uses CPP to get OS specific things right. Most importantly Windows doesn't
 -- support UNIX Sockets.
 --
