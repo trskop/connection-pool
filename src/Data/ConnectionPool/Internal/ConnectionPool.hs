@@ -62,13 +62,12 @@ newtype ConnectionPool a = ConnectionPool (Pool (Socket, a))
 -- details.
 createConnectionPool
     :: IO (Socket, a)
-    -- ^ Acquire a connection which is prepresented by a 'Socket'. There might
+    -- ^ Acquire a connection which is represented by a 'Socket'. There might
     -- be additional information associated with specific connection that we
-    -- represent here as a sencond type in a tuple. Such information are
-    -- considered read only and aren't passed to release function (see next
-    -- argument).
+    -- pass as a sencond value in a tuple. Such information are considered read
+    -- only and aren't passed to release function (see next argument).
     -> (Socket -> IO ())
-    -- ^ Release a connection which is prepresented by a 'Socket'.
+    -- ^ Release a connection which is represented by a 'Socket'.
     -> ResourcePoolParams
     -- ^ Data type representing all 'Pool.createPool' parameters that describe
     -- internal 'Pool' parameters.
