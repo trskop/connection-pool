@@ -1,0 +1,13 @@
+language: haskell
+
+ghc:
+  # Older than GHC 7.6 aren't supported by the package.
+  - 7.8
+  - 7.6
+
+script:
+  # Option -fpedantic turns on additional wornings in addition to -Wall.
+  - cabal configure -fpedantic && cabal build
+
+  # Following line tests if sdist package is created correctly.
+  - cabal sdist && cabal install dist/*.tar.gz
