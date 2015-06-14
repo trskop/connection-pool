@@ -32,7 +32,7 @@
 -- <http://hackage.haskell.org/package/streaming-commons streaming-commons> and
 -- other non-HaskellPlatform packages directly and it is only allowed to import
 -- "Data.ConnectionPool.Internal.ConnectionPool" internal module and nothing
--- else from this package. This package uses CPP to get OS specific things
+-- else from this module. This package uses CPP to get OS specific things
 -- right. Most importantly Windows doesn't support UNIX Sockets.
 --
 -- Please, bear above in mind when doing modifications.
