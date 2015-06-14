@@ -4,7 +4,7 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Helper functions that aren't provided by streaming-commons.
--- Copyright:    (c) 2014 Peter Trsko
+-- Copyright:    (c) 2014-2015, Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
@@ -47,11 +47,11 @@ module Data.ConnectionPool.Internal.Streaming
     )
   where
 
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(Just))
 import System.IO (IO)
 
 import Control.Monad.Trans.Control (MonadBaseControl)
-import Network.Socket (Socket, SockAddr)
+import Network.Socket (Socket, SockAddr, sClose)
 import Network.Socket.ByteString (sendAll)
 
 import Data.Streaming.Network (getSocketFamilyTCP, safeRecv)
@@ -65,7 +65,19 @@ import Data.Streaming.Network.Internal
     , ClientSettings(ClientSettings)
     )
 import qualified Data.Streaming.Network.Internal as AppData
-    (AppData(appLocalAddr', appRead', appSockAddr', appWrite'))
+    ( AppData
+        ( appLocalAddr'
+        , appRead'
+        , appSockAddr'
+        , appWrite'
+#if MIN_VERSION_streaming_commons(0,1,6)
+        , appCloseConnection'
+#endif
+#if MIN_VERSION_streaming_commons(0,1,12)
+        , appRawSocket'
+#endif
+        ))
+
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
 import qualified Data.Streaming.Network.Internal as AppDataUnix
@@ -96,10 +108,16 @@ runTcpAppImpl
     -> (AppData -> m r)
     -> m r
 runTcpAppImpl localAddr sock addr app = app AppData
-    { AppData.appRead' = safeRecv sock 4096
-    , AppData.appWrite' = sendAll sock
-    , AppData.appSockAddr' = addr
-    , AppData.appLocalAddr' = localAddr
+    { AppData.appRead' = safeRecv sock 4096     -- :: !(IO ByteString)
+    , AppData.appWrite' = sendAll sock          -- :: !(ByteString -> IO ())
+    , AppData.appSockAddr' = addr               -- :: !SockAddr
+    , AppData.appLocalAddr' = localAddr         -- :: !(Maybe SockAddr)
+#if MIN_VERSION_streaming_commons(0,1,6)
+    , AppData.appCloseConnection' = sClose sock -- :: !(IO ())
+#endif
+#if MIN_VERSION_streaming_commons(0,1,12)
+    , AppData.appRawSocket' = Just sock         -- :: Maybe Socket
+#endif
     }
 
 -- | Wrapper for 'getSocketFamilyTCP' that takes 'ClientSettings' instead of
