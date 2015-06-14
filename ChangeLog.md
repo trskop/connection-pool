@@ -3,8 +3,8 @@
 ## Version 0.1.2.0
 
 * Builds with GHC 7.10 and base 4.8. (new)
-* Builds with also with [streaming-commons][] `>1.5 && <1.13`. Tested up to
-  version 1.12.1. (new)
+* Builds with also with [streaming-commons][] `>0.1.5 && <0.1.13`. Tested up to
+  [streaming-commons][] version 1.12.1. (new)
 * Uploaded to [Hackage][]:
   <http://hackage.haskell.org/package/connection-pool-0.1.2.0>
 
