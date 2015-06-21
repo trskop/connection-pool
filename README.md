@@ -3,6 +3,7 @@ Connection Pool
 
 [![Hackage](http://img.shields.io/hackage/v/connection-pool.svg)
 ][Hackage: connection-pool]
+[![Hackage Dependencies](https://img.shields.io/hackage-deps/v/connection-pool.svg)](http://packdeps.haskellers.com/reverse/connection-pool)
 [![Haskell Programming Language](https://img.shields.io/badge/language-Haskell-blue.svg)][Haskell.org]
 [![BSD3 License](http://img.shields.io/badge/license-BSD3-brightgreen.svg)][tl;dr Legal: BSD3]
 
