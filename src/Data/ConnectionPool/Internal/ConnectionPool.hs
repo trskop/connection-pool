@@ -82,7 +82,7 @@ createConnectionPool acquire release params =
         (ResourcePoolParams._resourceIdleTimeout params)
         (ResourcePoolParams._numberOfResourcesPerStripe params)
 
--- | Specialized wrapper for 'Pool.withConnection'.
+-- | Specialized wrapper for 'Pool.withResource'.
 withConnection
     :: MonadBaseControl IO m
     => ConnectionPool a
