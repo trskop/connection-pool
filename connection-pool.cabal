@@ -37,8 +37,7 @@ extra-source-files:
   , example/*.hs
 
 flag pedantic
-  description:
-    Pass additional warning flags including to GHC during compilation.
+  description:          Pass additional warning flags to GHC during compilation.
   default:              False
   manual:               True
 
