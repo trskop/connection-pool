@@ -8,13 +8,13 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Family of connection pools specialized by transport protocol.
--- Copyright:    (c) 2014, Peter Trško
+-- Copyright:    (c) 2014-2015, Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  non-portable (CPP, DeriveDataTypeable, StandaloneDeriving,
---               NoImplicitPrelude, TypeFamilies)
+-- Portability:  CPP, DeriveDataTypeable, StandaloneDeriving,
+--               NoImplicitPrelude, TypeFamilies
 --
 -- Module defines type family of connection pools that is later specialised
 -- using type tags (phantom types) to specialize implementation of underlying
@@ -72,7 +72,7 @@ data TcpClient
 
 -- | Connection pool for TCP clients.
 newtype instance ConnectionPool TcpClient =
-    TcpConnectionPool (Internal.ConnectionPool SockAddr)
+    TcpConnectionPool (Internal.ConnectionPool () SockAddr)
 
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
@@ -83,6 +83,6 @@ data UnixClient
 
 -- | Connection pool for UNIX Socket clients.
 newtype instance ConnectionPool UnixClient =
-    UnixConnectionPool (Internal.ConnectionPool ())
+    UnixConnectionPool (Internal.ConnectionPool () ())
 #endif
     -- !WINDOWS

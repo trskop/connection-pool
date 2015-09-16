@@ -9,7 +9,7 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  non-portable (CPP, FlexibleContexts, NoImplicitPrelude)
+-- Portability:  CPP, FlexibleContexts, NoImplicitPrelude
 --
 -- Module defines helper functions that would be ideally provided by
 -- <http://hackage.haskell.org/package/streaming-commons streaming-commons>
@@ -92,10 +92,12 @@ runTcpApp
     :: MonadBaseControl IO m
     => Maybe SockAddr
     -> (AppData -> m r)
+    -> params
     -> Socket
     -> SockAddr
     -> m r
-runTcpApp localAddr app sock addr = runTcpAppImpl localAddr sock addr app
+runTcpApp localAddr app _params sock addr =
+    runTcpAppImpl localAddr sock addr app
 
 -- | Simplified 'Data.Streaming.Network.runTCPClient' and
 -- 'Data.Streaming.Network.runTCPServer' that provides only construction of
@@ -138,10 +140,11 @@ acquireTcpClientConnection settings = getSocketFamilyTCP host port addrFamily
 runUnixApp
     :: MonadBaseControl IO m
     => (AppDataUnix -> m r)
+    -> params
     -> Socket
     -> ()
     -> m r
-runUnixApp app sock () = runUnixAppImpl sock app
+runUnixApp app _params sock () = runUnixAppImpl sock app
 
 -- | Simplified 'Data.Streaming.Network.runUnixClient' and
 -- 'Data.Streaming.Network.runUnixServer' that provides only construction of

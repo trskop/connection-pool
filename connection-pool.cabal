@@ -55,6 +55,7 @@ library
       CPP
     , DeriveDataTypeable
     , FlexibleContexts
+    , NamedFieldPuns
     , NoImplicitPrelude
     , OverloadedStrings
     , RecordWildCards

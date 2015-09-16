@@ -9,8 +9,7 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  non-portable (DeriveDataTypeable, NoImplicitPrelude,
---               RecordWildCards)
+-- Portability:  DeriveDataTypeable, NoImplicitPrelude, RecordWildCards
 --
 -- Internal packages are here to provide access to internal definitions for
 -- library writers, but they should not be used in application code.

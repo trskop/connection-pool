@@ -1,16 +1,18 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE RecordWildCards #-}
 -- |
 -- Module:       $HEADER$
 -- Description:  ConnectionPool data type which is a specialized Pool wrapper.
--- Copyright:    (c) 2014, Peter Trško
+-- Copyright:    (c) 2014-2015, Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  non-portable (DeriveDataTypeable, FlexibleContexts,
---               NoImplicitPrelude)
+-- Portability:  DeriveDataTypeable, FlexibleContexts, NamedFieldPuns,
+--               NoImplicitPrelude, RecordWildCards
 --
 -- Internal packages are here to provide access to internal definitions for
 -- library writers, but they should not be used in application code.
@@ -26,7 +28,7 @@
 -- notable thing is that this package is not OS specific. Please, bear this in
 -- mind when doing modifications.
 module Data.ConnectionPool.Internal.ConnectionPool
-    ( ConnectionPool(ConnectionPool)
+    ( ConnectionPool(ConnectionPool, connectionParams, resourcePool)
     , createConnectionPool
     , destroyAllConnections
     , withConnection
@@ -55,7 +57,10 @@ import qualified Data.ConnectionPool.Internal.ResourcePoolParams
 
 
 -- | Simple specialized wrapper for 'Pool'.
-newtype ConnectionPool a = ConnectionPool (Pool (Socket, a))
+data ConnectionPool c a = ConnectionPool
+    { resourcePool :: !(Pool (Socket, a))
+    , connectionParams :: !c
+    }
   deriving (Typeable)
 
 -- | Specialized wrapper for 'Pool.createPool', see its documentation for
@@ -71,25 +76,30 @@ createConnectionPool
     -> ResourcePoolParams
     -- ^ Data type representing all 'Pool.createPool' parameters that describe
     -- internal 'Pool' parameters.
-    -> IO (ConnectionPool a)
+    -> IO (ConnectionPool () a)
     -- ^ Created connection pool that is parametrised by additional connection
     -- details.
 createConnectionPool acquire release params =
-    ConnectionPool <$> Pool.createPool
+    mkConnectionPool <$> Pool.createPool
         acquire
         (release . fst)
         (ResourcePoolParams._numberOfStripes params)
         (ResourcePoolParams._resourceIdleTimeout params)
         (ResourcePoolParams._numberOfResourcesPerStripe params)
+  where
+    mkConnectionPool pool = ConnectionPool
+        { resourcePool = pool
+        , connectionParams = ()
+        }
 
 -- | Specialized wrapper for 'Pool.withResource'.
 withConnection
     :: MonadBaseControl IO m
-    => ConnectionPool a
-    -> (Socket -> a -> m r)
+    => ConnectionPool c a
+    -> (c -> Socket -> a -> m r)
     -> m r
-withConnection (ConnectionPool pool) f =
-    Pool.withResource pool (uncurry f)
+withConnection ConnectionPool{..} f =
+    Pool.withResource resourcePool (uncurry (f connectionParams))
 
 -- | Destroy all connections that might be still open in a connection pool.
 -- This is useful when one needs to release all resources at once and not to
@@ -98,5 +108,6 @@ withConnection (ConnectionPool pool) f =
 -- For more details see 'Pool.destroyAllResources'.
 --
 -- /Since version 0.1.1.0./
-destroyAllConnections :: ConnectionPool a -> IO ()
-destroyAllConnections (ConnectionPool pool) = Pool.destroyAllResources pool
+destroyAllConnections :: ConnectionPool c a -> IO ()
+destroyAllConnections ConnectionPool{resourcePool} =
+    Pool.destroyAllResources resourcePool
