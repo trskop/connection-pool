@@ -91,6 +91,8 @@ library
       --
       -- * Version 0.1.6 introduced appCloseConnection' field of AppData.
       -- * Version 0.1.12 introduced appRawSocket' field of AppData.
+      -- * Version 0.1.13 extended ClientSettings with clientReadBufferSize
+      --   field and ClientSettingsUnix with clientReadBufferSizeUnix field.
     , transformers-base >= 0.4.2 && < 0.5
       -- Version bounds taken from latest monad-control package (at the moment
       -- 0.3.3.0), which is a dependency of resource-pool package.

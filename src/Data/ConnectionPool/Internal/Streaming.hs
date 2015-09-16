@@ -62,7 +62,7 @@ import Data.Streaming.Network.Internal
     , AppDataUnix(AppDataUnix)
 #endif
     -- !WINDOWS
-    , ClientSettings(ClientSettings)
+    , ClientSettings(clientPort, clientHost, clientAddrFamily)
     )
 import qualified Data.Streaming.Network.Internal as AppData
     ( AppData
@@ -123,8 +123,11 @@ runTcpAppImpl localAddr sock addr app = app AppData
 -- | Wrapper for 'getSocketFamilyTCP' that takes 'ClientSettings' instead of
 -- individual parameters.
 acquireTcpClientConnection :: ClientSettings -> IO (Socket, SockAddr)
-acquireTcpClientConnection (ClientSettings port host addrFamily) =
-    getSocketFamilyTCP host port addrFamily
+acquireTcpClientConnection settings = getSocketFamilyTCP host port addrFamily
+  where
+    port = clientPort settings
+    host = clientHost settings
+    addrFamily = clientAddrFamily settings
 
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
