@@ -38,9 +38,9 @@ extra-source-files:
 
 flag pedantic
   description:
-    Pass additional warning flags including -Werror to GHC during compilation.
-  default: False
-  manual: True
+    Pass additional warning flags including to GHC during compilation.
+  default:              False
+  manual:               True
 
 library
   hs-source-dirs:       src
@@ -111,7 +111,7 @@ library
     ghc-options:
       -fwarn-implicit-prelude
       -fwarn-missing-import-lists
-      -Werror
+--    -Werror
 
 source-repository head
   type:                 git
@@ -120,4 +120,4 @@ source-repository head
 source-repository this
   type:                 git
   location:             git://github.com/trskop/connection-pool.git
-  tag:                  v0.1.2.0
+  tag:                  v0.1.2.1
