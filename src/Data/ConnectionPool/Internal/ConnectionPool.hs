@@ -4,7 +4,7 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  ConnectionPool data type which is a specialized Pool wrapper.
--- Copyright:    (c) 2014 Peter Trsko
+-- Copyright:    (c) 2014, Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com

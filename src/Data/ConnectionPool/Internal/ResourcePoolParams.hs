@@ -4,7 +4,7 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Resource pool construction parameters.
--- Copyright:    (c) 2014 Peter Trsko
+-- Copyright:    (c) 2014, Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
@@ -74,9 +74,9 @@ data ResourcePoolParams = ResourcePoolParams
   deriving (Data, Show, Typeable)
 
 -- | @
--- numberOfStripes = 1
--- resourceIdleTimeout = 0.5
--- numberOfResourcesPerStripe = 1
+-- 'numberOfStripes' = 1
+-- 'resourceIdleTimeout' = 0.5
+-- 'numberOfResourcesPerStripe' = 1
 -- @
 instance Default ResourcePoolParams where
     def = ResourcePoolParams

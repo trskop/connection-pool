@@ -8,7 +8,7 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Family of connection pools specialized by transport protocol.
--- Copyright:    (c) 2014 Peter Trsko
+-- Copyright:    (c) 2014, Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
