@@ -1,10 +1,20 @@
 # ChangeLog / ReleaseNotes
 
+
+## Version 0.1.2.1
+
+* Builds also with [streaming-commons][] `>0.1.5 && <0.1.14`. Tested up to
+  [streaming-commons][] version 0.1.13. See also issue #1
+  <https://github.com/trskop/connection-pool/issues/1> (new)
+* Uploaded to [Hackage][]:
+  <http://hackage.haskell.org/package/connection-pool-0.1.2.1>
+
+
 ## Version 0.1.2.0
 
 * Builds with GHC 7.10 and base 4.8. (new)
-* Builds with also with [streaming-commons][] `>0.1.5 && <0.1.13`. Tested up to
-  [streaming-commons][] version 1.12.1. (new)
+* Builds also with [streaming-commons][] `>0.1.5 && <0.1.13`. Tested up to
+  [streaming-commons][] version 0.1.12.1. (new)
 * Uploaded to [Hackage][]:
   <http://hackage.haskell.org/package/connection-pool-0.1.2.0>
 
