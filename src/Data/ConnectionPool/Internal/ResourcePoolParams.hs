@@ -54,9 +54,9 @@ import Data.Functor (Functor)
 import Data.Int (Int)
 import Data.List ((++))
 import Data.Ord (Ord((<)))
+import Data.String (String)
 import Data.Typeable (Typeable)
 import Text.Show (Show(show))
-import Data.String (String)
 
 import Data.Time.Clock (NominalDiffTime)
 
