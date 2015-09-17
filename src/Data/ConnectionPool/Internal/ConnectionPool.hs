@@ -28,15 +28,17 @@
 -- notable thing is that this package is not OS specific. Please, bear this in
 -- mind when doing modifications.
 module Data.ConnectionPool.Internal.ConnectionPool
-    ( ConnectionPool(ConnectionPool, connectionParams, resourcePool)
+    ( ConnectionPool(ConnectionPool, _handlerParams, _resourcePool)
+    , resourcePool
+    , handlerParams
     , createConnectionPool
     , destroyAllConnections
     , withConnection
     )
   where
 
-import Control.Applicative ((<$>))
 import Data.Function ((.))
+import Data.Functor (Functor, (<$>))
 import Data.Tuple (fst, uncurry)
 import Data.Typeable (Typeable)
 import System.IO (IO)
@@ -58,10 +60,22 @@ import qualified Data.ConnectionPool.Internal.ResourcePoolParams
 
 -- | Simple specialized wrapper for 'Pool'.
 data ConnectionPool c a = ConnectionPool
-    { resourcePool :: !(Pool (Socket, a))
-    , connectionParams :: !c
+    { _resourcePool :: !(Pool (Socket, a))
+    , _handlerParams :: !c
     }
   deriving (Typeable)
+
+resourcePool
+    :: Functor f
+    => ((Pool (Socket, a)) -> f (Pool (Socket, b)))
+    -> ConnectionPool c a -> f (ConnectionPool c b)
+resourcePool f connectionPool@ConnectionPool{_resourcePool} =
+    (\b -> connectionPool{_resourcePool = b}) <$> f _resourcePool
+
+handlerParams
+    :: Functor f => (a -> f b) -> ConnectionPool a c -> f (ConnectionPool b c)
+handlerParams f connectionPool@ConnectionPool{_handlerParams} =
+    (\b -> connectionPool{_handlerParams = b}) <$> f _handlerParams
 
 -- | Specialized wrapper for 'Pool.createPool', see its documentation for
 -- details.
@@ -88,8 +102,8 @@ createConnectionPool acquire release params =
         (ResourcePoolParams._numberOfResourcesPerStripe params)
   where
     mkConnectionPool pool = ConnectionPool
-        { resourcePool = pool
-        , connectionParams = ()
+        { _resourcePool = pool
+        , _handlerParams = ()
         }
 
 -- | Specialized wrapper for 'Pool.withResource'.
@@ -99,7 +113,7 @@ withConnection
     -> (c -> Socket -> a -> m r)
     -> m r
 withConnection ConnectionPool{..} f =
-    Pool.withResource resourcePool (uncurry (f connectionParams))
+    Pool.withResource _resourcePool (uncurry (f _handlerParams))
 
 -- | Destroy all connections that might be still open in a connection pool.
 -- This is useful when one needs to release all resources at once and not to
@@ -109,5 +123,5 @@ withConnection ConnectionPool{..} f =
 --
 -- /Since version 0.1.1.0./
 destroyAllConnections :: ConnectionPool c a -> IO ()
-destroyAllConnections ConnectionPool{resourcePool} =
-    Pool.destroyAllResources resourcePool
+destroyAllConnections ConnectionPool{_resourcePool} =
+    Pool.destroyAllResources _resourcePool
