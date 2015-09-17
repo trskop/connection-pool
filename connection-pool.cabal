@@ -47,6 +47,7 @@ library
       Data.ConnectionPool
     , Data.ConnectionPool.Internal.ConnectionPool
     , Data.ConnectionPool.Internal.ConnectionPoolFamily
+    , Data.ConnectionPool.Internal.HandlerParams
     , Data.ConnectionPool.Internal.ResourcePoolParams
     , Data.ConnectionPool.Internal.Streaming
 
