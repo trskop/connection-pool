@@ -12,6 +12,8 @@
   this library uses this value as a default even if it's built with
   [streaming-commons][] `< 0.1.13`. For more details see
   <https://github.com/fpco/streaming-commons/issues/22>. (change)
+* Uploaded to [Hackage][]:
+  <http://hackage.haskell.org/package/connection-pool-0.1.3>
 
 
 ## Version 0.1.2.1
