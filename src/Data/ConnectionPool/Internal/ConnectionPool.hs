@@ -75,7 +75,7 @@ instance Show handlerParams => Show (ConnectionPool handlerParams a) where
 
 resourcePool
     :: Functor f
-    => ((Pool (Socket, a)) -> f (Pool (Socket, b)))
+    => (Pool (Socket, a) -> f (Pool (Socket, b)))
     -> ConnectionPool handlerParams a -> f (ConnectionPool handlerParams b)
 resourcePool = _resourcePool ~@@^> \s b -> s{_resourcePool = b}
 
