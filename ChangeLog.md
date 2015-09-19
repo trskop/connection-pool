@@ -1,6 +1,19 @@
 # ChangeLog / ReleaseNotes
 
 
+## Version 0.1.3
+
+* All lenses are now defined as strict, as a consequence lower bound of
+  [between][] is now `0.10.0.0` instead of `0.9.0.0`. (change)
+* Support for user defined read buffer size, this was introduced in
+  [streaming-commons][] `== 0.1.13`. Non-internal library API is backwards
+  compatible. (new)
+* Default buffer size changed in [streaming-commons][] `== 0.1.13` to 32kiB,
+  this library uses this value as a default even if it's built with
+  [streaming-commons][] `< 0.1.13`. For more details see
+  <https://github.com/fpco/streaming-commons/issues/22>. (change)
+
+
 ## Version 0.1.2.1
 
 * Builds also with [streaming-commons][] `>0.1.5 && <0.1.14`. Tested up to
@@ -41,6 +54,9 @@
 
 
 
+[between]:
+  http://hackage.haskell.org/package/between
+  "Function combinator 'between' and derived combinators."
 [Hackage]:
   http://hackage.haskell.org/
   "HackageDB (or just Hackage) is a collection of releases of Haskell packages."
