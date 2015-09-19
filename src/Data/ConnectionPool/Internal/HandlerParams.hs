@@ -34,12 +34,13 @@ module Data.ConnectionPool.Internal.HandlerParams
   where
 
 import Data.Data (Data, Typeable)
-import Data.Functor (Functor, (<$>))
+import Data.Functor (Functor)
 import Data.Int (Int)
 import GHC.Generics (Generic)
 import Text.Show (Show)
 
 import Data.Default.Class (Default(def))
+import Data.Function.Between.Strict ((~@@^>))
 
 
 data HandlerParams = HandlerParams
@@ -64,5 +65,4 @@ instance Default HandlerParams where
 -- data from connection.
 readBufferSize
     :: Functor f => (Int -> f Int) -> HandlerParams -> f HandlerParams
-readBufferSize f params@HandlerParams{_readBufferSize} =
-    (\b -> params{_readBufferSize = b}) <$> f _readBufferSize
+readBufferSize = _readBufferSize ~@@^> \s b -> s{_readBufferSize = b}

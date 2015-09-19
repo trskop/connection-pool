@@ -47,6 +47,7 @@ import Text.Show (Show(showsPrec), showChar, shows, showString)
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Network.Socket (Socket)
 
+import Data.Function.Between.Strict ((~@@^>))
 import Data.Pool (Pool)
 import qualified Data.Pool as Pool
     ( createPool
@@ -76,15 +77,13 @@ resourcePool
     :: Functor f
     => ((Pool (Socket, a)) -> f (Pool (Socket, b)))
     -> ConnectionPool handlerParams a -> f (ConnectionPool handlerParams b)
-resourcePool f connectionPool@ConnectionPool{_resourcePool} =
-    (\b -> connectionPool{_resourcePool = b}) <$> f _resourcePool
+resourcePool = _resourcePool ~@@^> \s b -> s{_resourcePool = b}
 
 handlerParams
     :: Functor f
     => (handlerParams -> f handlerParams')
     -> ConnectionPool handlerParams c -> f (ConnectionPool handlerParams' c)
-handlerParams f connectionPool@ConnectionPool{_handlerParams} =
-    (\b -> connectionPool{_handlerParams = b}) <$> f _handlerParams
+handlerParams = _handlerParams ~@@^> \s b -> s{_handlerParams = b}
 
 -- | Specialized wrapper for 'Pool.createPool', see its documentation for
 -- details.

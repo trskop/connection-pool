@@ -76,7 +76,8 @@ library
     -- }}} Packages distributed with HaskellPlatform (or GHC itself) ----------
 
     -- {{{ Other packages -----------------------------------------------------
-    , between >= 0.9.0.0
+    , between >= 0.10.0.0
+    -- ^ This package uses strict API which was introduced in version 0.10.0.0.
     , data-default-class == 0.0.*
     , monad-control >= 0.2.0.1
       -- Version boundary same as resource-pool (version 0.2.0.0) has.

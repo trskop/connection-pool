@@ -60,7 +60,7 @@ import Text.Show (Show(show))
 import Data.Time.Clock (NominalDiffTime)
 
 import Data.Default.Class (Default(def))
-import Data.Function.Between ((~@@^>))
+import Data.Function.Between.Strict ((~@@^>))
 
 
 -- | Parameters of resource pool that describe things like its internal
