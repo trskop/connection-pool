@@ -117,7 +117,7 @@ example) will block. If we have more then one connection available in our pool,
 then the first thread acquires connection, blocks on `threadDelay` call, but
 the other thread also acquires connection and prints its output while the first
 thread is still blocked on `threadDelay`. This example demonstrates how
-connection pool behaves if it reached its capacity and when it has onough free
+connection pool behaves if it reached its capacity and when it has enough free
 resources.
 
 
