@@ -42,6 +42,7 @@ import Data.Functor (Functor, (<$>))
 import Data.Tuple (fst, uncurry)
 import Data.Typeable (Typeable)
 import System.IO (IO)
+import Text.Show (Show(showsPrec), showChar, shows, showString)
 
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Network.Socket (Socket)
@@ -59,28 +60,38 @@ import qualified Data.ConnectionPool.Internal.ResourcePoolParams
 
 
 -- | Simple specialized wrapper for 'Pool'.
-data ConnectionPool c a = ConnectionPool
+data ConnectionPool handlerParams a = ConnectionPool
     { _resourcePool :: !(Pool (Socket, a))
-    , _handlerParams :: !c
+    , _handlerParams :: !handlerParams
     }
   deriving (Typeable)
+
+-- | @since 0.1.3
+instance Show handlerParams => Show (ConnectionPool handlerParams a) where
+    showsPrec _ ConnectionPool{..} =
+        showString "ConnectionPool {resourcePool = " . shows _resourcePool
+        . showString ", handlerParams = " . shows _handlerParams . showChar '}'
 
 resourcePool
     :: Functor f
     => ((Pool (Socket, a)) -> f (Pool (Socket, b)))
-    -> ConnectionPool c a -> f (ConnectionPool c b)
+    -> ConnectionPool handlerParams a -> f (ConnectionPool handlerParams b)
 resourcePool f connectionPool@ConnectionPool{_resourcePool} =
     (\b -> connectionPool{_resourcePool = b}) <$> f _resourcePool
 
 handlerParams
-    :: Functor f => (a -> f b) -> ConnectionPool a c -> f (ConnectionPool b c)
+    :: Functor f
+    => (handlerParams -> f handlerParams')
+    -> ConnectionPool handlerParams c -> f (ConnectionPool handlerParams' c)
 handlerParams f connectionPool@ConnectionPool{_handlerParams} =
     (\b -> connectionPool{_handlerParams = b}) <$> f _handlerParams
 
 -- | Specialized wrapper for 'Pool.createPool', see its documentation for
 -- details.
 createConnectionPool
-    :: IO (Socket, a)
+    :: handlerParams
+    -- ^ Data type passed down to individual connection handlers.
+    -> IO (Socket, a)
     -- ^ Acquire a connection which is represented by a 'Socket'. There might
     -- be additional information associated with specific connection that we
     -- pass as a sencond value in a tuple. Such information are considered read
@@ -90,10 +101,10 @@ createConnectionPool
     -> ResourcePoolParams
     -- ^ Data type representing all 'Pool.createPool' parameters that describe
     -- internal 'Pool' parameters.
-    -> IO (ConnectionPool () a)
+    -> IO (ConnectionPool handlerParams a)
     -- ^ Created connection pool that is parametrised by additional connection
     -- details.
-createConnectionPool acquire release params =
+createConnectionPool hParams acquire release params =
     mkConnectionPool <$> Pool.createPool
         acquire
         (release . fst)
@@ -103,7 +114,7 @@ createConnectionPool acquire release params =
   where
     mkConnectionPool pool = ConnectionPool
         { _resourcePool = pool
-        , _handlerParams = ()
+        , _handlerParams = hParams
         }
 
 -- | Specialized wrapper for 'Pool.withResource'.
@@ -122,6 +133,6 @@ withConnection ConnectionPool{..} f =
 -- For more details see 'Pool.destroyAllResources'.
 --
 -- /Since version 0.1.1.0./
-destroyAllConnections :: ConnectionPool c a -> IO ()
+destroyAllConnections :: ConnectionPool handlerParams a -> IO ()
 destroyAllConnections ConnectionPool{_resourcePool} =
     Pool.destroyAllResources _resourcePool

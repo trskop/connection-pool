@@ -31,8 +31,9 @@
 -- This module doesn't depend on
 -- <http://hackage.haskell.org/package/streaming-commons streaming-commons> and
 -- other non-HaskellPlatform packages directly and it is only allowed to import
--- "Data.ConnectionPool.Internal.ConnectionPool" internal module and nothing
--- else from this module. This package uses CPP to get OS specific things
+-- "Data.ConnectionPool.Internal.ConnectionPool" and
+-- "Data.ConnectionPool.Internal.HandlerParams" internal module and nothing
+-- else from this package. This package uses CPP to get OS specific things
 -- right. Most importantly Windows doesn't support UNIX Sockets.
 --
 -- Please, bear above in mind when doing modifications.
@@ -57,7 +58,8 @@ import Network.Socket (SockAddr)
 
 import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
     (ConnectionPool)
-
+import qualified Data.ConnectionPool.Internal.HandlerParams as Internal
+    (HandlerParams)
 
 -- | Family of connection pools parametrised by transport protocol.
 data family ConnectionPool :: * -> *
@@ -72,7 +74,7 @@ data TcpClient
 
 -- | Connection pool for TCP clients.
 newtype instance ConnectionPool TcpClient =
-    TcpConnectionPool (Internal.ConnectionPool () SockAddr)
+    TcpConnectionPool (Internal.ConnectionPool Internal.HandlerParams SockAddr)
 
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
@@ -83,6 +85,6 @@ data UnixClient
 
 -- | Connection pool for UNIX Socket clients.
 newtype instance ConnectionPool UnixClient =
-    UnixConnectionPool (Internal.ConnectionPool () ())
+    UnixConnectionPool (Internal.ConnectionPool Internal.HandlerParams ())
 #endif
     -- !WINDOWS

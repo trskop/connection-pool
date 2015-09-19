@@ -24,9 +24,10 @@
 --
 -- This module doesn't neither depend on
 -- <http://hackage.haskell.org/package/resource-pool resource-pool> package nor
--- any other module of this package, and it shoud stay that way. This module
--- uses CPP to get OS specific things right. Most importantly Windows doesn't
--- support UNIX Sockets.
+-- any other module of this package, with notable exception of
+-- "Data.ConnectionPool.Internal.HandlerParams", and it shoud stay that way.
+-- This module uses CPP to get OS specific things right. Most importantly
+-- Windows doesn't support UNIX Sockets.
 --
 -- Please, bear above in mind when doing modifications.
 module Data.ConnectionPool.Internal.Streaming
@@ -35,6 +36,7 @@ module Data.ConnectionPool.Internal.Streaming
       acquireTcpClientConnection
     , runTcpApp
     , runTcpAppImpl
+    , fromClientSettings
 
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
@@ -42,11 +44,13 @@ module Data.ConnectionPool.Internal.Streaming
     -- * Unix Socket
     , runUnixApp
     , runUnixAppImpl
+    , fromClientSettingsUnix
 #endif
     -- !WINDOWS
     )
   where
 
+import Data.Int (Int)
 import Data.Maybe (Maybe(Just))
 import System.IO (IO)
 
@@ -54,15 +58,31 @@ import Control.Monad.Trans.Control (MonadBaseControl)
 import Network.Socket (Socket, SockAddr, sClose)
 import Network.Socket.ByteString (sendAll)
 
-import Data.Streaming.Network (getSocketFamilyTCP, safeRecv)
+import Data.Default.Class (Default(def))
+import Data.Streaming.Network
+    ( getSocketFamilyTCP
+    , safeRecv
+#if MIN_VERSION_streaming_commons(0,1,13)
+    -- Until streaming-commons 0.1.13, read buffer size was fixed.
+    , getReadBufferSize
+#endif
+    )
 import Data.Streaming.Network.Internal
     ( AppData(AppData)
+    , ClientSettings(clientPort, clientHost, clientAddrFamily)
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
     , AppDataUnix(AppDataUnix)
+#if MIN_VERSION_streaming_commons(0,1,13)
+    -- Until streaming-commons 0.1.13, read buffer size was fixed. For some
+    -- mistifying reason there is no
+    --
+    --   instance HasReadBufferSize ClientSettingsUnix".
+    , ClientSettingsUnix(clientReadBufferSizeUnix)
+#endif
+    -- streaming-commons >= 0.1.13
 #endif
     -- !WINDOWS
-    , ClientSettings(clientPort, clientHost, clientAddrFamily)
     )
 import qualified Data.Streaming.Network.Internal as AppData
     ( AppData
@@ -78,6 +98,10 @@ import qualified Data.Streaming.Network.Internal as AppData
 #endif
         ))
 
+import Data.ConnectionPool.Internal.HandlerParams
+    ( HandlerParams(_readBufferSize)
+    )
+
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
 import qualified Data.Streaming.Network.Internal as AppDataUnix
@@ -92,12 +116,14 @@ runTcpApp
     :: MonadBaseControl IO m
     => Maybe SockAddr
     -> (AppData -> m r)
-    -> params
+    -> HandlerParams
     -> Socket
     -> SockAddr
     -> m r
-runTcpApp localAddr app _params sock addr =
-    runTcpAppImpl localAddr sock addr app
+runTcpApp localAddr app params sock addr =
+    runTcpAppImpl localAddr sock addr bufSize app
+  where
+    bufSize = _readBufferSize params
 
 -- | Simplified 'Data.Streaming.Network.runTCPClient' and
 -- 'Data.Streaming.Network.runTCPServer' that provides only construction of
@@ -107,10 +133,11 @@ runTcpAppImpl
     => Maybe SockAddr
     -> Socket
     -> SockAddr
+    -> Int
     -> (AppData -> m r)
     -> m r
-runTcpAppImpl localAddr sock addr app = app AppData
-    { AppData.appRead' = safeRecv sock 4096     -- :: !(IO ByteString)
+runTcpAppImpl localAddr sock addr bufSize app = app AppData
+    { AppData.appRead' = safeRecv sock bufSize  -- :: !(IO ByteString)
     , AppData.appWrite' = sendAll sock          -- :: !(ByteString -> IO ())
     , AppData.appSockAddr' = addr               -- :: !SockAddr
     , AppData.appLocalAddr' = localAddr         -- :: !(Maybe SockAddr)
@@ -131,6 +158,14 @@ acquireTcpClientConnection settings = getSocketFamilyTCP host port addrFamily
     host = clientHost settings
     addrFamily = clientAddrFamily settings
 
+fromClientSettings :: ClientSettings -> HandlerParams
+fromClientSettings _tcpParams = def
+#if MIN_VERSION_streaming_commons(0,1,13)
+    -- Until streaming-commons 0.1.13, read buffer size was fixed.
+    { _readBufferSize = getReadBufferSize _tcpParams
+    }
+#endif
+
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
 
@@ -140,11 +175,13 @@ acquireTcpClientConnection settings = getSocketFamilyTCP host port addrFamily
 runUnixApp
     :: MonadBaseControl IO m
     => (AppDataUnix -> m r)
-    -> params
+    -> HandlerParams
     -> Socket
     -> ()
     -> m r
-runUnixApp app _params sock () = runUnixAppImpl sock app
+runUnixApp app params sock () = runUnixAppImpl sock bufSize app
+  where
+    bufSize = _readBufferSize params
 
 -- | Simplified 'Data.Streaming.Network.runUnixClient' and
 -- 'Data.Streaming.Network.runUnixServer' that provides only construction of
@@ -152,11 +189,21 @@ runUnixApp app _params sock () = runUnixAppImpl sock app
 runUnixAppImpl
     :: MonadBaseControl IO m
     => Socket
+    -> Int
     -> (AppDataUnix -> m r)
     -> m r
-runUnixAppImpl sock app = app AppDataUnix
-    { AppDataUnix.appReadUnix = safeRecv sock 4096
+runUnixAppImpl sock bufSize app = app AppDataUnix
+    { AppDataUnix.appReadUnix = safeRecv sock bufSize
     , AppDataUnix.appWriteUnix = sendAll sock
     }
+
+fromClientSettingsUnix :: ClientSettingsUnix -> HandlerParams
+fromClientSettingsUnix _unixParams = def
+#if MIN_VERSION_streaming_commons(0,1,13)
+    -- Until streaming-commons 0.1.13, read buffer size was fixed.
+    { _readBufferSize = clientReadBufferSizeUnix _unixParams
+    }
+#endif
+    -- streaming-commons >= 0.1.13
 #endif
     -- !WINDOWS

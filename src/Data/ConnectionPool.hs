@@ -135,9 +135,11 @@ import Data.ConnectionPool.Internal.ResourcePoolParams
     )
 import qualified Data.ConnectionPool.Internal.Streaming as Internal
     ( acquireTcpClientConnection
+    , fromClientSettings
     , runTcpApp
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
+    , fromClientSettingsUnix
     , runUnixApp
 #endif
     -- !WINDOWS
@@ -150,10 +152,11 @@ createTcpClientPool
     -> ClientSettings
     -> IO (ConnectionPool TcpClient)
 createTcpClientPool poolParams tcpParams = Internal.TcpConnectionPool
-    <$> Internal.createConnectionPool acquire release poolParams
+    <$> Internal.createConnectionPool handlerParams acquire release poolParams
   where
     acquire = Internal.acquireTcpClientConnection tcpParams
     release = Socket.sClose
+    handlerParams = Internal.fromClientSettings tcpParams
 
 -- | Temporarily take a TCP connection from a pool, run client with it, and
 -- return it to the pool afterwards. For details how connections are allocated
@@ -188,10 +191,11 @@ createUnixClientPool
     -> ClientSettingsUnix
     -> IO (ConnectionPool UnixClient)
 createUnixClientPool poolParams unixParams = Internal.UnixConnectionPool
-    <$> Internal.createConnectionPool acquire release poolParams
+    <$> Internal.createConnectionPool handlerParams acquire release poolParams
   where
     acquire = (, ()) <$> getSocketUnix (getPath unixParams)
     release = Socket.sClose
+    handlerParams = Internal.fromClientSettingsUnix unixParams
 
 -- | Temporarily take a UNIX Sockets connection from a pool, run client with
 -- it, and return it to the pool afterwards. For details how connections are
