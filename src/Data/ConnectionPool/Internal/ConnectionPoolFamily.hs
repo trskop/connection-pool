@@ -1,5 +1,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 #ifdef KIND_POLYMORPHIC_TYPEABLE
 {-# LANGUAGE StandaloneDeriving #-}
@@ -13,8 +15,8 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  CPP, DeriveDataTypeable, StandaloneDeriving,
---               NoImplicitPrelude, TypeFamilies
+-- Portability:  CPP, DeriveDataTypeable, FlexibleInstances,
+--               StandaloneDeriving, NoImplicitPrelude, TypeFamilies
 --
 -- Module defines type family of connection pools that is later specialised
 -- using type tags (phantom types) to specialize implementation of underlying
@@ -53,6 +55,7 @@ module Data.ConnectionPool.Internal.ConnectionPoolFamily
   where
 
 import Data.Typeable (Typeable)
+import GHC.Generics (Generic)
 
 import Network.Socket (SockAddr)
 
@@ -70,21 +73,31 @@ deriving instance Typeable ConnectionPool
 
 -- | Type tag used to specialize connection pool for TCP clients.
 data TcpClient
-  deriving Typeable
+  deriving (Generic, Typeable)
 
 -- | Connection pool for TCP clients.
+--
+-- /Definition changed in version 0.1.3./
 newtype instance ConnectionPool TcpClient =
     TcpConnectionPool (Internal.ConnectionPool Internal.HandlerParams SockAddr)
+
+-- | /Since version 0.1.4./
+deriving instance Generic (ConnectionPool TcpClient)
 
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
 
 -- | Type tag used to specialize connection pool for UNIX Socket clients.
 data UnixClient
-  deriving Typeable
+  deriving (Generic, Typeable)
 
 -- | Connection pool for UNIX Socket clients.
+--
+-- /Definition changed in version 0.1.3./
 newtype instance ConnectionPool UnixClient =
     UnixConnectionPool (Internal.ConnectionPool Internal.HandlerParams ())
+
+-- | /Since version 0.1.4./
+deriving instance Generic (ConnectionPool UnixClient)
 #endif
     -- !WINDOWS
