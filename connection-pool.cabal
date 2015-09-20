@@ -48,6 +48,7 @@ library
   hs-source-dirs:       src
   exposed-modules:
       Data.ConnectionPool
+    , Data.ConnectionPool.Family
     , Data.ConnectionPool.Internal.ConnectionPool
     , Data.ConnectionPool.Internal.ConnectionPoolFamily
     , Data.ConnectionPool.Internal.HandlerParams
@@ -109,11 +110,17 @@ library
   if impl(ghc >= 7.8.1)
     cpp-options:        -DKIND_POLYMORPHIC_TYPEABLE
 
-  if impl(ghc <7.8 || >=7.10)
-    cpp-options:        -DDERIVE_GHC_GENERIC_FOR_DATA_FAMILIES
+  if impl(ghc >= 7.10)
+    -- To be able to use poly-kinded ConnectionPool data family we need two
+    -- things (i) poly-kinded Typeable class and (ii) compiler that is capable
+    -- of deriving Typeable instance for poly-kinded data family. Otherwise we
+    -- would break backward compatibility by not providing Typeable instance.
+    -- Both of these work on GHC only on >=7.10.
+    cpp-options:        -DKIND_POLYMORPHIC_TYPEABLE_POLYKINDED_DATA_FAMILIES
 
   ghc-options:          -Wall
   if impl(ghc >= 6.8)
+    -- Newer GHC versions include -fwarn-tabs in -Wall.
     ghc-options:        -fwarn-tabs
   if flag(pedantic)
     ghc-options:

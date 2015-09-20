@@ -59,19 +59,11 @@ import GHC.Generics (Generic)
 
 import Network.Socket (SockAddr, Socket)
 
+import Data.ConnectionPool.Family (ConnectionPool)
 import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
     (ConnectionPool)
 import qualified Data.ConnectionPool.Internal.HandlerParams as Internal
     (HandlerParams)
-
--- | Family of connection pools parametrised by transport protocol.
---
--- /Definition changed to kind polymorphic variant in version 0.1.4./
-data family ConnectionPool :: k -> *
-
-#ifdef KIND_POLYMORPHIC_TYPEABLE
-deriving instance Typeable ConnectionPool
-#endif
 
 -- | Type tag used to specialize connection pool for TCP clients.
 data TcpClient
