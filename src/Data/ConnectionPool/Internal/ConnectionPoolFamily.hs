@@ -4,9 +4,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE PolyKinds #-}
-#ifdef KIND_POLYMORPHIC_TYPEABLE
 {-# LANGUAGE StandaloneDeriving #-}
-#endif
 {-# LANGUAGE TypeFamilies #-}
 -- |
 -- Module:       $HEADER$
@@ -84,7 +82,8 @@ data TcpClient
 newtype instance ConnectionPool TcpClient =
     TcpConnectionPool
         (Internal.ConnectionPool Internal.HandlerParams Socket SockAddr)
-  deriving (Generic)
+
+deriving instance Generic (ConnectionPool TcpClient)
 
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
@@ -99,6 +98,7 @@ data UnixClient
 newtype instance ConnectionPool UnixClient =
     UnixConnectionPool
         (Internal.ConnectionPool Internal.HandlerParams Socket ())
-  deriving (Generic)
+
+deriving instance Generic (ConnectionPool UnixClient)
 #endif
     -- !WINDOWS
