@@ -3,6 +3,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE PolyKinds #-}
 #ifdef KIND_POLYMORPHIC_TYPEABLE
 {-# LANGUAGE StandaloneDeriving #-}
 #endif
@@ -15,7 +16,7 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  CPP, DeriveDataTypeable, FlexibleInstances,
+-- Portability:  CPP, DeriveDataTypeable, FlexibleInstances, PolyKinds,
 --               StandaloneDeriving, NoImplicitPrelude, TypeFamilies
 --
 -- Module defines type family of connection pools that is later specialised
@@ -57,7 +58,7 @@ module Data.ConnectionPool.Internal.ConnectionPoolFamily
 import Data.Typeable (Typeable)
 import GHC.Generics (Generic)
 
-import Network.Socket (SockAddr)
+import Network.Socket (SockAddr, Socket)
 
 import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
     (ConnectionPool)
@@ -65,7 +66,9 @@ import qualified Data.ConnectionPool.Internal.HandlerParams as Internal
     (HandlerParams)
 
 -- | Family of connection pools parametrised by transport protocol.
-data family ConnectionPool :: * -> *
+--
+-- /Definition changed to kind polymorphic variant in version 0.1.4./
+data family ConnectionPool :: k -> *
 
 #ifdef KIND_POLYMORPHIC_TYPEABLE
 deriving instance Typeable ConnectionPool
@@ -77,9 +80,10 @@ data TcpClient
 
 -- | Connection pool for TCP clients.
 --
--- /Definition changed in version 0.1.3./
+-- /Definition changed in version 0.1.3 and 0.1.4./
 newtype instance ConnectionPool TcpClient =
-    TcpConnectionPool (Internal.ConnectionPool Internal.HandlerParams SockAddr)
+    TcpConnectionPool
+        (Internal.ConnectionPool Internal.HandlerParams Socket SockAddr)
 
 -- | /Since version 0.1.4./
 deriving instance Generic (ConnectionPool TcpClient)
@@ -93,9 +97,10 @@ data UnixClient
 
 -- | Connection pool for UNIX Socket clients.
 --
--- /Definition changed in version 0.1.3./
+-- /Definition changed in version 0.1.3 and 0.1.4./
 newtype instance ConnectionPool UnixClient =
-    UnixConnectionPool (Internal.ConnectionPool Internal.HandlerParams ())
+    UnixConnectionPool
+        (Internal.ConnectionPool Internal.HandlerParams Socket ())
 
 -- | /Since version 0.1.4./
 deriving instance Generic (ConnectionPool UnixClient)
