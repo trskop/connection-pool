@@ -1,10 +1,11 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE PolyKinds #-}
+#ifdef KIND_POLYMORPHIC_TYPEABLE
 {-# LANGUAGE StandaloneDeriving #-}
+#endif
 {-# LANGUAGE TypeFamilies #-}
 -- |
 -- Module:       $HEADER$
@@ -14,8 +15,8 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  CPP, DeriveDataTypeable, FlexibleInstances, PolyKinds,
---               StandaloneDeriving, NoImplicitPrelude, TypeFamilies
+-- Portability:  CPP, DeriveDataTypeable, PolyKinds, StandaloneDeriving,
+--               NoImplicitPrelude, TypeFamilies
 --
 -- Module defines type family of connection pools that is later specialised
 -- using type tags (phantom types) to specialize implementation of underlying
@@ -82,8 +83,10 @@ data TcpClient
 newtype instance ConnectionPool TcpClient =
     TcpConnectionPool
         (Internal.ConnectionPool Internal.HandlerParams Socket SockAddr)
-
-deriving instance Generic (ConnectionPool TcpClient)
+#ifdef DERIVE_GHC_GENERIC_FOR_DATA_FAMILIES
+  deriving (Generic)
+#endif
+    -- DERIVE_GHC_GENERIC_FOR_DATA_FAMILIES
 
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
@@ -98,7 +101,9 @@ data UnixClient
 newtype instance ConnectionPool UnixClient =
     UnixConnectionPool
         (Internal.ConnectionPool Internal.HandlerParams Socket ())
-
-deriving instance Generic (ConnectionPool UnixClient)
+#ifdef DERIVE_GHC_GENERIC_FOR_DATA_FAMILIES
+  deriving (Generic)
+#endif
+    -- DERIVE_GHC_GENERIC_FOR_DATA_FAMILIES
 #endif
     -- !WINDOWS

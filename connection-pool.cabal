@@ -106,6 +106,9 @@ library
   if impl(ghc >= 7.8.1)
     cpp-options:        -DKIND_POLYMORPHIC_TYPEABLE
 
+  if impl(ghc <7.8 || >=7.10)
+    cpp-options:        -DDERIVE_GHC_GENERIC_FOR_DATA_FAMILIES
+
   ghc-options:          -Wall
   if impl(ghc >= 6.8)
     ghc-options:        -fwarn-tabs
