@@ -10,6 +10,9 @@ description:
   .
   2. and pool for UNIX Sockets client connections.
   .
+  In addition it can be used to build your own connection pool using provided
+  primitives.
+  .
   This package is built on top of
   <http://hackage.haskell.org/package/resource-pool resource-pool> and
   <http://hackage.haskell.org/package/streaming-commons streaming-commons>.

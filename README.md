@@ -19,6 +19,8 @@ provides two
 1. pool for TCP client connections,
 2. and pool for UNIX Sockets client connections.
 
+In addition it can be used to build your own connection pool using provided primitives.
+
 This package is built on top of [resource-pool][Hackage: resource-pool] and
 [streaming-commons][Hackage: streaming-commons]. The later allows us to use
 [conduit-extra][Hackage: conduit-extra] package for implementation of TCP or
