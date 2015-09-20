@@ -84,9 +84,7 @@ data TcpClient
 newtype instance ConnectionPool TcpClient =
     TcpConnectionPool
         (Internal.ConnectionPool Internal.HandlerParams Socket SockAddr)
-
--- | /Since version 0.1.4./
-deriving instance Generic (ConnectionPool TcpClient)
+  deriving (Generic)
 
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
@@ -101,8 +99,6 @@ data UnixClient
 newtype instance ConnectionPool UnixClient =
     UnixConnectionPool
         (Internal.ConnectionPool Internal.HandlerParams Socket ())
-
--- | /Since version 0.1.4./
-deriving instance Generic (ConnectionPool UnixClient)
+  deriving (Generic)
 #endif
     -- !WINDOWS
