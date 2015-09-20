@@ -1,6 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 -- |
 -- Module:       $HEADER$
@@ -11,8 +10,7 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  DeriveDataTypeable, NamedFieldPuns, NoImplicitPrelude,
---               RecordWildCards
+-- Portability:  DeriveDataTypeable, DeriveGeneric, NoImplicitPrelude
 --
 -- Internal packages are here to provide access to internal definitions for
 -- library writers, but they should not be used in application code.
@@ -27,6 +25,8 @@
 -- <http://hackage.haskell.org/package/resource-pool resource-pool>. Another
 -- notable thing is that this package is not OS specific. Please, bear this in
 -- mind when doing modifications.
+--
+-- /Since version 0.1.3./
 module Data.ConnectionPool.Internal.HandlerParams
     ( HandlerParams(HandlerParams, _readBufferSize)
     , readBufferSize

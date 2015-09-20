@@ -112,11 +112,15 @@ import qualified Data.Streaming.Network.Internal as AppDataUnix
 -- | Wrapper for 'runTcpAppImpl' with a type signature that is more natural
 -- for implementing a TCP specific
 -- 'Data.ConnectionPool.Internal.ConnectionPool.withConnection'.
+--
+-- Definition changed in /version 0.1.3/.
 runTcpApp
     :: MonadBaseControl IO m
     => Maybe SockAddr
     -> (AppData -> m r)
     -> HandlerParams
+    -- ^ Parameters passed down to connection handler @('AppData' -> m r)@.
+    -- /Since version 0.1.3./
     -> Socket
     -> SockAddr
     -> m r
@@ -128,12 +132,15 @@ runTcpApp localAddr app params sock addr =
 -- | Simplified 'Data.Streaming.Network.runTCPClient' and
 -- 'Data.Streaming.Network.runTCPServer' that provides only construction of
 -- 'AppData' and passing it to a callback function.
+--
+-- Definition changed in /version 0.1.3/.
 runTcpAppImpl
     :: MonadBaseControl IO m
     => Maybe SockAddr
     -> Socket
     -> SockAddr
     -> Int
+    -- ^ Buffer size used while reading from socket. /Since version 0.1.3./
     -> (AppData -> m r)
     -> m r
 runTcpAppImpl localAddr sock addr bufSize app = app AppData
@@ -158,6 +165,10 @@ acquireTcpClientConnection settings = getSocketFamilyTCP host port addrFamily
     host = clientHost settings
     addrFamily = clientAddrFamily settings
 
+-- | Construct 'HandlerParams' that are passed to individual TCP connection
+-- handlers.
+--
+-- /Since version 0.1.3./
 fromClientSettings :: ClientSettings -> HandlerParams
 fromClientSettings _tcpParams = def
 #if MIN_VERSION_streaming_commons(0,1,13)
@@ -172,10 +183,14 @@ fromClientSettings _tcpParams = def
 -- | Wrapper for 'runUnixAppImpl' with a type signature that is more natural
 -- for implementing a UNIX Socket specific
 -- 'Data.ConnectionPool.Internal.ConnectionPool.withConnection'.
+--
+-- Definition changed in /version 0.1.3/.
 runUnixApp
     :: MonadBaseControl IO m
     => (AppDataUnix -> m r)
     -> HandlerParams
+    -- ^ Parameters passed down to connection handler @('AppDataUnix' -> m r)@.
+    -- /Since version 0.1.3./
     -> Socket
     -> ()
     -> m r
@@ -186,10 +201,13 @@ runUnixApp app params sock () = runUnixAppImpl sock bufSize app
 -- | Simplified 'Data.Streaming.Network.runUnixClient' and
 -- 'Data.Streaming.Network.runUnixServer' that provides only construction of
 -- 'AppDataUnix' and passing it to a callback function.
+--
+-- Definition changed in /version 0.1.3/.
 runUnixAppImpl
     :: MonadBaseControl IO m
     => Socket
     -> Int
+    -- ^ Buffer size used while reading from socket. /Since version 0.1.3./
     -> (AppDataUnix -> m r)
     -> m r
 runUnixAppImpl sock bufSize app = app AppDataUnix
@@ -197,6 +215,10 @@ runUnixAppImpl sock bufSize app = app AppDataUnix
     , AppDataUnix.appWriteUnix = sendAll sock
     }
 
+-- | Construct 'HandlerParams' that are passed to individual UNIX socket
+-- connection handlers.
+--
+-- /Since version 0.1.3./
 fromClientSettingsUnix :: ClientSettingsUnix -> HandlerParams
 fromClientSettingsUnix _unixParams = def
 #if MIN_VERSION_streaming_commons(0,1,13)

@@ -61,36 +61,61 @@ import qualified Data.ConnectionPool.Internal.ResourcePoolParams
 
 
 -- | Simple specialized wrapper for 'Pool'.
-data ConnectionPool handlerParams a = ConnectionPool
-    { _resourcePool :: !(Pool (Socket, a))
+--
+-- Definition changed in /version 0.1.3/.
+data ConnectionPool handlerParams connectionInfo = ConnectionPool
+    { _resourcePool :: !(Pool (Socket, connectionInfo))
+    -- ^ See 'resourcePool' for details.
+    --
+    -- /Since version 0.1.3./
     , _handlerParams :: !handlerParams
+    -- ^ See 'handlerParams' for details.
+    --
+    -- /Since version 0.1.3./
     }
   deriving (Typeable)
 
--- | @since 0.1.3
-instance Show handlerParams => Show (ConnectionPool handlerParams a) where
+-- | /Since version 0.1.3./
+instance Show handlerParams => Show (ConnectionPool handlerParams i) where
     showsPrec _ ConnectionPool{..} =
         showString "ConnectionPool {resourcePool = " . shows _resourcePool
         . showString ", handlerParams = " . shows _handlerParams . showChar '}'
 
+-- | Lens for accessing underlying resource pool @'Pool' ('Socket',
+-- connectionInfo)@. Where 'Socket' represents network connection and
+-- @connectionInfo@ is a protocol specific information associated with the same
+-- network connection as the 'Socket' is.
+--
+-- /Since version 0.1.3./
 resourcePool
     :: Functor f
-    => (Pool (Socket, a) -> f (Pool (Socket, b)))
-    -> ConnectionPool handlerParams a -> f (ConnectionPool handlerParams b)
+    => (Pool (Socket, i) -> f (Pool (Socket, i')))
+    -> ConnectionPool p i -> f (ConnectionPool p i')
 resourcePool = _resourcePool ~@@^> \s b -> s{_resourcePool = b}
 
+-- | Lens for accessing parameters passed down to connection handler. These
+-- information will usually be implementation specific. E.g. for
+-- <https://hackage.haskell.org/package/streaming-commons streaming-commons> >=
+-- 1.13 we use this to pass around read buffer size, for more details see
+-- module "Data.ConnectionPool.Internal.HandlerParams".
+--
+-- /Since version 0.1.3./
 handlerParams
     :: Functor f
     => (handlerParams -> f handlerParams')
-    -> ConnectionPool handlerParams c -> f (ConnectionPool handlerParams' c)
+    -> ConnectionPool handlerParams i -> f (ConnectionPool handlerParams' i)
 handlerParams = _handlerParams ~@@^> \s b -> s{_handlerParams = b}
 
 -- | Specialized wrapper for 'Pool.createPool', see its documentation for
 -- details.
+--
+-- Definition changed in /version 0.1.3/.
 createConnectionPool
     :: handlerParams
     -- ^ Data type passed down to individual connection handlers.
-    -> IO (Socket, a)
+    --
+    -- /Since version 0.1.3./
+    -> IO (Socket, connectionInfo)
     -- ^ Acquire a connection which is represented by a 'Socket'. There might
     -- be additional information associated with specific connection that we
     -- pass as a sencond value in a tuple. Such information are considered read
@@ -100,7 +125,7 @@ createConnectionPool
     -> ResourcePoolParams
     -- ^ Data type representing all 'Pool.createPool' parameters that describe
     -- internal 'Pool' parameters.
-    -> IO (ConnectionPool handlerParams a)
+    -> IO (ConnectionPool handlerParams connectionInfo)
     -- ^ Created connection pool that is parametrised by additional connection
     -- details.
 createConnectionPool hParams acquire release params =
@@ -119,8 +144,8 @@ createConnectionPool hParams acquire release params =
 -- | Specialized wrapper for 'Pool.withResource'.
 withConnection
     :: MonadBaseControl IO m
-    => ConnectionPool c a
-    -> (c -> Socket -> a -> m r)
+    => ConnectionPool handlerParams connectionInfo
+    -> (handlerParams -> Socket -> connectionInfo -> m r)
     -> m r
 withConnection ConnectionPool{..} f =
     Pool.withResource _resourcePool (uncurry (f _handlerParams))
@@ -132,6 +157,6 @@ withConnection ConnectionPool{..} f =
 -- For more details see 'Pool.destroyAllResources'.
 --
 -- /Since version 0.1.1.0./
-destroyAllConnections :: ConnectionPool handlerParams a -> IO ()
+destroyAllConnections :: ConnectionPool p i -> IO ()
 destroyAllConnections ConnectionPool{_resourcePool} =
     Pool.destroyAllResources _resourcePool

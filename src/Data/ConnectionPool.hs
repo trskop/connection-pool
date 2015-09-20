@@ -10,11 +10,10 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable
--- Portability:  non-portable (CPP, FlexibleContexts, NoImplicitPrelude,
---               TupleSections)
+-- Portability:  CPP, FlexibleContexts, NoImplicitPrelude, TupleSections
 --
--- Connection pools for TCP clients and UNIX Socket clients (not supported on
--- Windows).
+-- Connection pools for TCP clients and UNIX Socket clients, later is not
+-- supported on Windows.
 --
 -- This package is built on top of
 -- <http://hackage.haskell.org/package/resource-pool resource-pool> and
