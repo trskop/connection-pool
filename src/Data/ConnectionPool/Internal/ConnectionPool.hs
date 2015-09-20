@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE NoImplicitPrelude #-}
@@ -11,7 +12,7 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  DeriveDataTypeable, FlexibleContexts, NamedFieldPuns,
+-- Portability:  DeriveDataTypeable, DeriveGeneric, FlexibleContexts, NamedFieldPuns,
 --               NoImplicitPrelude, RecordWildCards
 --
 -- Internal packages are here to provide access to internal definitions for
@@ -41,6 +42,7 @@ import Data.Function ((.))
 import Data.Functor (Functor, (<$>))
 import Data.Tuple (fst, uncurry)
 import Data.Typeable (Typeable)
+import GHC.Generics (Generic)
 import System.IO (IO)
 import Text.Show (Show(showsPrec), showChar, shows, showString)
 
@@ -72,7 +74,7 @@ data ConnectionPool handlerParams connection connectionInfo = ConnectionPool
     --
     -- /Since version 0.1.3./
     }
-  deriving (Typeable)
+  deriving (Generic, Typeable)
 
 -- | /Since version 0.1.3./
 instance Show handlerParams => Show (ConnectionPool handlerParams c i) where
