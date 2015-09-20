@@ -56,6 +56,7 @@ module Data.ConnectionPool.Internal.ConnectionPoolFamily
 
 import Data.Typeable (Typeable)
 import GHC.Generics (Generic)
+import Text.Show (Show)
 
 import Network.Socket (SockAddr, Socket)
 
@@ -76,7 +77,7 @@ data TcpClient
 newtype instance ConnectionPool TcpClient =
     TcpConnectionPool
         (Internal.ConnectionPool Internal.HandlerParams Socket SockAddr)
-  deriving (Generic)
+  deriving (Generic, Show)
 
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
@@ -91,6 +92,6 @@ data UnixClient
 newtype instance ConnectionPool UnixClient =
     UnixConnectionPool
         (Internal.ConnectionPool Internal.HandlerParams Socket ())
-  deriving (Generic)
+  deriving (Generic, Show)
 #endif
     -- !WINDOWS
