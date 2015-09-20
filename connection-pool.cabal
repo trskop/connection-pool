@@ -59,6 +59,7 @@ library
   other-extensions:
       CPP
     , DeriveDataTypeable
+    , DeriveGeneric
     , FlexibleContexts
     , NamedFieldPuns
     , NoImplicitPrelude

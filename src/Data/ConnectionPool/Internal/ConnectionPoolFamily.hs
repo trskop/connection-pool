@@ -65,6 +65,7 @@ import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
 import qualified Data.ConnectionPool.Internal.HandlerParams as Internal
     (HandlerParams)
 
+
 -- | Type tag used to specialize connection pool for TCP clients.
 data TcpClient
   deriving (Generic, Typeable)
@@ -75,10 +76,7 @@ data TcpClient
 newtype instance ConnectionPool TcpClient =
     TcpConnectionPool
         (Internal.ConnectionPool Internal.HandlerParams Socket SockAddr)
-#ifdef DERIVE_GHC_GENERIC_FOR_DATA_FAMILIES
   deriving (Generic)
-#endif
-    -- DERIVE_GHC_GENERIC_FOR_DATA_FAMILIES
 
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
@@ -93,9 +91,6 @@ data UnixClient
 newtype instance ConnectionPool UnixClient =
     UnixConnectionPool
         (Internal.ConnectionPool Internal.HandlerParams Socket ())
-#ifdef DERIVE_GHC_GENERIC_FOR_DATA_FAMILIES
   deriving (Generic)
-#endif
-    -- DERIVE_GHC_GENERIC_FOR_DATA_FAMILIES
 #endif
     -- !WINDOWS
