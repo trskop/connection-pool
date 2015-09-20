@@ -43,6 +43,10 @@ import Data.Default.Class (Default(def))
 import Data.Function.Between.Strict ((~@@^>))
 
 
+-- | Additional parameters passed to connection handler that aren't part of
+-- specific connection context.
+--
+-- /Since version 0.1.3./
 data HandlerParams = HandlerParams
     { _readBufferSize :: !Int
     -- ^ See 'readBufferSize' for details.
@@ -63,6 +67,8 @@ instance Default HandlerParams where
 
 -- | Lens for accessing read buffer size that handler should use when reading
 -- data from connection.
+--
+-- /Since version 0.1.3./
 readBufferSize
     :: Functor f => (Int -> f Int) -> HandlerParams -> f HandlerParams
 readBufferSize = _readBufferSize ~@@^> \s b -> s{_readBufferSize = b}
