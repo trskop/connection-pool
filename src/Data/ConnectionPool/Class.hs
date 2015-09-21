@@ -1,6 +1,9 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+#ifdef KIND_POLYMORPHIC_TYPEABLE_POLYKINDED_DATA_FAMILIES
 {-# LANGUAGE PolyKinds #-}
+#endif
 {-# LANGUAGE TypeFamilies #-}
 -- |
 -- Module:       $HEADER$
@@ -10,7 +13,8 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable
--- Portability:  FlexibleContexts, NoImplicitPrelude, PolyKinds, TypeFamilies
+-- Portability:  CPP, FlexibleContexts, NoImplicitPrelude, PolyKinds,
+--               TypeFamilies
 --
 -- Type class for common connection pool operations.
 module Data.ConnectionPool.Class
@@ -30,9 +34,15 @@ import Data.ConnectionPool.Family (ConnectionPool)
 -- smart constructors.
 --
 -- /Since version 0.1.4./
-class ConnectionPoolFor (t :: k) where
+class
+#ifdef KIND_POLYMORPHIC_TYPEABLE_POLYKINDED_DATA_FAMILIES
+    ConnectionPoolFor (t :: k)
+#else
+    ConnectionPoolFor t
+#endif
+  where
     -- | Data passed to individual connection handler.
-    type HandlerData (t :: k)
+    type HandlerData t
 
     -- | Temporarily take a connection from a pool, run handler with it, and
     -- return it to the pool afterwards.
