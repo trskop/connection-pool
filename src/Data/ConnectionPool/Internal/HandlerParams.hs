@@ -20,11 +20,9 @@
 -- > import qualified Data.ConnectionPool.Internal.HandlerParams as Internal
 --
 -- This module doesn't depend on
--- <http://hackage.haskell.org/package/streaming-commons streaming-commons>
--- and other non-HaskellPlatform packages with notable exception of
--- <http://hackage.haskell.org/package/resource-pool resource-pool>. Another
--- notable thing is that this package is not OS specific. Please, bear this in
--- mind when doing modifications.
+-- <http://hackage.haskell.org/package/streaming-commons streaming-commons>.
+-- Another notable thing is that this package is not OS specific. Please, bear
+-- this in mind when doing modifications.
 --
 -- /Since version 0.1.3./
 module Data.ConnectionPool.Internal.HandlerParams

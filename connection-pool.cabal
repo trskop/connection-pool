@@ -48,12 +48,16 @@ library
   hs-source-dirs:       src
   exposed-modules:
       Data.ConnectionPool
+    , Data.ConnectionPool.Class
     , Data.ConnectionPool.Family
     , Data.ConnectionPool.Internal.ConnectionPool
-    , Data.ConnectionPool.Internal.ConnectionPoolFamily
     , Data.ConnectionPool.Internal.HandlerParams
     , Data.ConnectionPool.Internal.ResourcePoolParams
     , Data.ConnectionPool.Internal.Streaming
+    , Data.ConnectionPool.Internal.TCP
+
+  if !os(windows)
+    exposed-modules:    Data.ConnectionPool.Internal.Unix
 
   default-language:     Haskell2010
   other-extensions:

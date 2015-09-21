@@ -1,7 +1,5 @@
 {-# LANGUAGE CPP #-}
-{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE TupleSections #-}
 -- |
 -- Module:       $HEADER$
 -- Description:  Connection pools for various transport protocols.
@@ -10,7 +8,7 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable
--- Portability:  CPP, FlexibleContexts, NoImplicitPrelude, TupleSections
+-- Portability:  CPP, NoImplicitPrelude
 --
 -- Connection pools for TCP clients and UNIX Socket clients, later is not
 -- supported on Windows.
@@ -19,14 +17,16 @@
 -- <http://hackage.haskell.org/package/resource-pool resource-pool> and
 -- <http://hackage.haskell.org/package/streaming-commons streaming-commons>
 -- packages. The later allows us to use
--- <http://hackage.haskell.org/package/conduit-extra conduit-extra> package
--- for implementing TCP and UNIX Sockets clients. Package /conduit-extra/
--- defines @appSource@ and @appSink@ based on abstractions from
--- /streaming-commons/ package and they can be therefore reused. Difference
--- between using /conduit-extra/ or /streaming-commons/ is that instead of
--- using @runTCPClient@ (or its lifted variant @runGeneralTCPClient@ from
+-- <http://hackage.haskell.org/package/conduit-extra conduit-extra> package for
+-- implementing TCP and UNIX Sockets clients. Package /conduit-extra/ defines
+-- @appSource@ and @appSink@ based on abstractions from /streaming-commons/
+-- package and they can be therefore reused. Difference between using
+-- /conduit-extra/ or /streaming-commons/ is that instead of using
+-- @runTCPClient@ (or its lifted variant @runGeneralTCPClient@ from
 -- /conduit-extra/) one would use 'withTcpClientConnection', and instead of
--- @runUnixClient@ it would be 'withUnixClientConnection'.
+-- @runUnixClient@ it would be 'withUnixClientConnection'. There is also more
+-- generic function named 'withConnection', which takes either 'ConnectionPool'
+-- instance.
 module Data.ConnectionPool
     (
     -- * TCP Client Example
@@ -84,47 +84,27 @@ module Data.ConnectionPool
     , destroyAllUnixClientConnections
 #endif
     -- !WINDOWS
+
+    -- * Polymorphic Interface
+    --
+    -- | /Since version 0.1.4./
+    , ConnectionPoolFor(..)
     )
   where
 
-import Control.Applicative ((<$>))
-import Data.Function ((.))
-import Data.Maybe (Maybe(Nothing))
-import System.IO (IO)
-
-import qualified Network.Socket as Socket (sClose)
-
-import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Streaming.Network
     ( AppData
     , ClientSettings
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
-    , AppDataUnix
     , ClientSettingsUnix
-    , getPath
-    , getSocketUnix
+    , AppDataUnix
 #endif
     -- !WINDOWS
     )
 
-import Data.ConnectionPool.Internal.ConnectionPoolFamily
-    ( ConnectionPool
-    , TcpClient
-#ifndef WINDOWS
-    -- Windows doesn't support UNIX Sockets.
-    , UnixClient
-#endif
-    -- !WINDOWS
-    )
-import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
-    ( createConnectionPool
-    , withConnection
-    , destroyAllConnections
-    )
-import qualified Data.ConnectionPool.Internal.ConnectionPoolFamily as Internal
-    ( ConnectionPool(..)
-    )
+import Data.ConnectionPool.Class (ConnectionPoolFor(..))
+import Data.ConnectionPool.Family (ConnectionPool)
 import Data.ConnectionPool.Internal.ResourcePoolParams
     ( ResourcePoolParams
     , numberOfResourcesPerStripe
@@ -132,95 +112,23 @@ import Data.ConnectionPool.Internal.ResourcePoolParams
     , resourceIdleTimeout
     , validateResourcePoolParams
     )
-import qualified Data.ConnectionPool.Internal.Streaming as Internal
-    ( acquireTcpClientConnection
-    , fromClientSettings
-    , runTcpApp
+import Data.ConnectionPool.Internal.TCP
+    ( TcpClient
+    , createTcpClientPool
+    , withTcpClientConnection
+    , destroyAllTcpClientConnections
+    )
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
-    , fromClientSettingsUnix
-    , runUnixApp
-#endif
-    -- !WINDOWS
+import Data.ConnectionPool.Internal.Unix
+    ( UnixClient
+    , createUnixClientPool
+    , destroyAllUnixClientConnections
+    , withUnixClientConnection
     )
-
-
--- | Create connection pool for TCP clients.
-createTcpClientPool
-    :: ResourcePoolParams
-    -> ClientSettings
-    -> IO (ConnectionPool TcpClient)
-createTcpClientPool poolParams tcpParams = Internal.TcpConnectionPool
-    <$> Internal.createConnectionPool handlerParams acquire release poolParams
-  where
-    acquire = Internal.acquireTcpClientConnection tcpParams
-    release = Socket.sClose
-    handlerParams = Internal.fromClientSettings tcpParams
-
--- | Temporarily take a TCP connection from a pool, run client with it, and
--- return it to the pool afterwards. For details how connections are allocated
--- see 'Data.Pool.withResource'.
-withTcpClientConnection
-    :: MonadBaseControl IO m
-    => ConnectionPool TcpClient
-    -> (AppData -> m r)
-    -> m r
-withTcpClientConnection (Internal.TcpConnectionPool pool) =
-    Internal.withConnection pool . Internal.runTcpApp Nothing
-
--- | Destroy all TCP connections that might be still open in a connection pool.
--- This is useful when one needs to release all resources at once and not to
--- wait for idle timeout to be reached.
---
--- For more details see 'Pool.destroyAllResources'.
---
--- /Since version 0.1.1.0./
-destroyAllTcpClientConnections
-    :: ConnectionPool TcpClient
-    -> IO ()
-destroyAllTcpClientConnections (Internal.TcpConnectionPool pool) =
-    Internal.destroyAllConnections pool
-
-#ifndef WINDOWS
--- Windows doesn't support UNIX Sockets.
-
--- | Create connection pool for UNIX Sockets clients.
-createUnixClientPool
-    :: ResourcePoolParams
-    -> ClientSettingsUnix
-    -> IO (ConnectionPool UnixClient)
-createUnixClientPool poolParams unixParams = Internal.UnixConnectionPool
-    <$> Internal.createConnectionPool handlerParams acquire release poolParams
-  where
-    acquire = (, ()) <$> getSocketUnix (getPath unixParams)
-    release = Socket.sClose
-    handlerParams = Internal.fromClientSettingsUnix unixParams
-
--- | Temporarily take a UNIX Sockets connection from a pool, run client with
--- it, and return it to the pool afterwards. For details how connections are
--- allocated see 'Data.Pool.withResource'.
-withUnixClientConnection
-    :: MonadBaseControl IO m
-    => ConnectionPool UnixClient
-    -> (AppDataUnix -> m r)
-    -> m r
-withUnixClientConnection (Internal.UnixConnectionPool pool) =
-    Internal.withConnection pool . Internal.runUnixApp
-
--- | Destroy all UNIX Sockets connections that might be still open in a
--- connection pool. This is useful when one needs to release all resources at
--- once and not to wait for idle timeout to be reached.
---
--- For more details see 'Pool.destroyAllResources'.
---
--- /Since version 0.1.1.0./
-destroyAllUnixClientConnections
-    :: ConnectionPool UnixClient
-    -> IO ()
-destroyAllUnixClientConnections (Internal.UnixConnectionPool pool) =
-    Internal.destroyAllConnections pool
 #endif
     -- !WINDOWS
+
 
 -- $tcpClientExample
 --
