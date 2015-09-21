@@ -1,6 +1,8 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE RecordWildCards #-}
@@ -12,7 +14,8 @@
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  DeriveDataTypeable, DeriveGeneric, FlexibleContexts, NamedFieldPuns,
+-- Portability:  DeriveDataTypeable, DeriveGeneric, FunctionalDependencies,
+--               FlexibleContexts, MultiParamTypeClasses, NamedFieldPuns,
 --               NoImplicitPrelude, RecordWildCards
 --
 -- Internal packages are here to provide access to internal definitions for
@@ -35,6 +38,7 @@ module Data.ConnectionPool.Internal.ConnectionPool
     , createConnectionPool
     , destroyAllConnections
     , withConnection
+    , HasConnectionPool(connectionPool)
     )
   where
 
@@ -168,3 +172,11 @@ withConnection ConnectionPool{..} f =
 destroyAllConnections :: ConnectionPool p c i -> IO ()
 destroyAllConnections ConnectionPool{_resourcePool} =
     Pool.destroyAllResources _resourcePool
+
+-- | /Since version 0.1.4./
+class HasConnectionPool p c i s | s -> p, s -> c, s -> i where
+    -- | Lens for accessing 'ConnectionPool' wrapped in a data type.
+    connectionPool
+        :: Functor f
+        => (ConnectionPool p c i -> f (ConnectionPool p c i))
+        -> s -> f s
