@@ -32,7 +32,7 @@ import Data.ConnectionPool.Family (ConnectionPool)
 -- /Since version 0.1.4./
 class ConnectionPoolFor (t :: k) where
     -- | Data passed to individual connection handler.
-    type HandlerData t
+    type HandlerData (t :: k)
 
     -- | Temporarily take a connection from a pool, run handler with it, and
     -- return it to the pool afterwards.
