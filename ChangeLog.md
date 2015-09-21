@@ -1,6 +1,30 @@
 # ChangeLog / ReleaseNotes
 
 
+## Version 0.1.4
+
+* Introducing `ConnectionPoolFor` type class which has instances for both
+  `ConnectionPool TcpClient` and `ConnectionPool UnixClient`. Class is located
+  in its own module `Data.ConnectionPool.Class`, therefore it is part of stable
+  API. It provides `withConnection` and `destroyAllConnections` methods which
+  can be used instead of their more specific equivalents. (new)
+* `ConnectionPool` data family moved in to its own module
+  `Data.ConnectionPool.Family`, as a consequence it became part of stable API.
+  (change)
+* Providing instances of `Generic` and `Show` where ever possible and
+  reasonable. This is a backwards compatible change. (new)
+* Internal `ConnectionPool` data type is now more generic because `Socket`
+  handle isn't hard-coded in it any more. This change breaks packages depending
+  on internal API. (change)
+* Internal type class `HasConnectionPool` was introduced to simplify access to
+  `ConnectionPool` data type wrapped in other types. (new)
+* Internal modules were heavily reorganized and TCP and UNIX Sockets related
+  implementations were moved in to their own modules. This change breaks
+  packages depending on internal API. (change)
+* Uploaded to [Hackage][]:
+  <http://hackage.haskell.org/package/connection-pool-0.1.4>
+
+
 ## Version 0.1.3
 
 * All lenses are now defined as strict, as a consequence lower bound of
