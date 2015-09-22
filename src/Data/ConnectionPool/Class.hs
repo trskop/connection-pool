@@ -36,13 +36,13 @@ import Data.ConnectionPool.Family (ConnectionPool)
 -- /Since version 0.1.4./
 class
 #ifdef KIND_POLYMORPHIC_TYPEABLE_POLYKINDED_DATA_FAMILIES
-    ConnectionPoolFor (t :: k)
+    ConnectionPoolFor (protocol :: k)
 #else
-    ConnectionPoolFor t
+    ConnectionPoolFor protocol
 #endif
   where
     -- | Data passed to individual connection handler.
-    type HandlerData t
+    type HandlerData protocol
 
     -- | Temporarily take a connection from a pool, run handler with it, and
     -- return it to the pool afterwards.
@@ -50,8 +50,8 @@ class
     -- /Since version 0.1.4./
     withConnection
         :: MonadBaseControl IO m
-        => ConnectionPool t
-        -> (HandlerData t -> m r)
+        => ConnectionPool protocol
+        -> (HandlerData protocol -> m r)
         -> m r
 
     -- | Destroy all connections that might be still open in a connection pool.
@@ -59,4 +59,4 @@ class
     -- to wait for idle timeout to be reached.
     --
     -- /Since version 0.1.4./
-    destroyAllConnections :: ConnectionPool t -> IO ()
+    destroyAllConnections :: ConnectionPool protocol -> IO ()
