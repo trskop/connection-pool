@@ -109,6 +109,7 @@ import qualified Data.Streaming.Network.Internal as AppDataUnix
 #endif
     -- !WINDOWS
 
+
 -- | Wrapper for 'runTcpAppImpl' with a type signature that is more natural
 -- for implementing a TCP specific
 -- 'Data.ConnectionPool.Internal.ConnectionPool.withConnection'.
@@ -128,6 +129,7 @@ runTcpApp localAddr app params sock addr =
     runTcpAppImpl localAddr sock addr bufSize app
   where
     bufSize = _readBufferSize params
+{-# INLINE runTcpApp #-}
 
 -- | Simplified 'Data.Streaming.Network.runTCPClient' and
 -- 'Data.Streaming.Network.runTCPServer' that provides only construction of
@@ -155,6 +157,7 @@ runTcpAppImpl localAddr sock addr bufSize app = app AppData
     , AppData.appRawSocket' = Just sock         -- :: Maybe Socket
 #endif
     }
+{-# INLINE runTcpAppImpl #-}
 
 -- | Wrapper for 'getSocketFamilyTCP' that takes 'ClientSettings' instead of
 -- individual parameters.
@@ -164,6 +167,7 @@ acquireTcpClientConnection settings = getSocketFamilyTCP host port addrFamily
     port = clientPort settings
     host = clientHost settings
     addrFamily = clientAddrFamily settings
+{-# INLINEABLE acquireTcpClientConnection #-}
 
 -- | Construct 'HandlerParams' that are passed to individual TCP connection
 -- handlers.
@@ -176,6 +180,7 @@ fromClientSettings _tcpParams = def
     { _readBufferSize = getReadBufferSize _tcpParams
     }
 #endif
+{-# INLINE fromClientSettings #-}
 
 #ifndef WINDOWS
 -- Windows doesn't support UNIX Sockets.
@@ -197,6 +202,7 @@ runUnixApp
 runUnixApp app params sock () = runUnixAppImpl sock bufSize app
   where
     bufSize = _readBufferSize params
+{-# INLINE runUnixApp #-}
 
 -- | Simplified 'Data.Streaming.Network.runUnixClient' and
 -- 'Data.Streaming.Network.runUnixServer' that provides only construction of
@@ -214,6 +220,7 @@ runUnixAppImpl sock bufSize app = app AppDataUnix
     { AppDataUnix.appReadUnix = safeRecv sock bufSize
     , AppDataUnix.appWriteUnix = sendAll sock
     }
+{-# INLINE runUnixAppImpl #-}
 
 -- | Construct 'HandlerParams' that are passed to individual UNIX socket
 -- connection handlers.
@@ -229,3 +236,4 @@ fromClientSettingsUnix _unixParams = def
     -- streaming-commons >= 0.1.13
 #endif
     -- !WINDOWS
+{-# INLINE fromClientSettingsUnix #-}

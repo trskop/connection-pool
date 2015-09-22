@@ -83,6 +83,7 @@ instance Default ResourcePoolParams where
         , _resourceIdleTimeout = 0.5
         , _numberOfResourcesPerStripe = 1
         }
+    {-# INLINE def #-}
 
 -- | Lens for accessing stripe count. The number of distinct sub-pools to
 -- maintain. The smallest acceptable value is 1 (default).
@@ -92,6 +93,7 @@ numberOfStripes
     -> ResourcePoolParams -> f ResourcePoolParams
 numberOfStripes =
     _numberOfStripes ~@@^> \s b -> s {_numberOfStripes = b}
+{-# INLINE numberOfStripes #-}
 
 -- | Lens for accessing amount of time for which an unused resource is kept
 -- open. The smallest acceptable value is 0.5 seconds (default).
@@ -101,6 +103,7 @@ resourceIdleTimeout
     -> ResourcePoolParams -> f ResourcePoolParams
 resourceIdleTimeout = _resourceIdleTimeout ~@@^> \s b ->
     s {_resourceIdleTimeout = b}
+{-# INLINE resourceIdleTimeout #-}
 
 -- | Lens for accessing maximum number of resources to keep open per stripe.
 -- The smallest acceptable value is 1 (default).
@@ -110,6 +113,7 @@ numberOfResourcesPerStripe
     -> ResourcePoolParams -> f ResourcePoolParams
 numberOfResourcesPerStripe = _numberOfResourcesPerStripe ~@@^> \s b ->
     s {_numberOfResourcesPerStripe = b}
+{-# INLINE numberOfResourcesPerStripe #-}
 
 -- | Check if all parameters for underlying resource pool are valid:
 --

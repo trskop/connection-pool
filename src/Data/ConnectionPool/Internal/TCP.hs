@@ -100,6 +100,7 @@ instance
     HasConnectionPool HandlerParams Socket SockAddr (ConnectionPool TcpClient)
   where
     connectionPool = const TcpConnectionPool <^@~ \(TcpConnectionPool a) -> a
+    {-# INLINE connectionPool #-}
 
 -- | Defined using:
 --
@@ -113,7 +114,10 @@ instance ConnectionPoolFor TcpClient where
     type HandlerData TcpClient = AppData
 
     withConnection = withTcpClientConnection
+    {-# INLINE withConnection #-}
+
     destroyAllConnections = destroyAllTcpClientConnections
+    {-# INLINE destroyAllConnections #-}
 
 -- | Create connection pool for TCP clients.
 createTcpClientPool
@@ -126,6 +130,7 @@ createTcpClientPool poolParams tcpParams = TcpConnectionPool
     acquire = Internal.acquireTcpClientConnection tcpParams
     release = Socket.sClose
     handlerParams = Internal.fromClientSettings tcpParams
+{-# INLINE createTcpClientPool #-}
 
 -- | Temporarily take a TCP connection from a pool, run client with it, and
 -- return it to the pool afterwards. For details how connections are allocated
@@ -137,6 +142,7 @@ withTcpClientConnection
     -> m r
 withTcpClientConnection (TcpConnectionPool pool) =
     Internal.withConnection pool . Internal.runTcpApp Nothing
+{-# INLINE withTcpClientConnection #-}
 
 -- | Destroy all TCP connections that might be still open in a connection pool.
 -- This is useful when one needs to release all resources at once and not to
@@ -150,3 +156,4 @@ destroyAllTcpClientConnections
     -> IO ()
 destroyAllTcpClientConnections (TcpConnectionPool pool) =
     Internal.destroyAllConnections pool
+{-# INLINE destroyAllTcpClientConnections #-}

@@ -103,6 +103,7 @@ newtype instance ConnectionPool UnixClient =
 instance HasConnectionPool HandlerParams Socket () (ConnectionPool UnixClient)
   where
     connectionPool = const UnixConnectionPool <^@~ \(UnixConnectionPool a) -> a
+    {-# INLINE connectionPool #-}
 
 -- | Defined using:
 --
@@ -116,7 +117,10 @@ instance ConnectionPoolFor UnixClient where
     type HandlerData UnixClient = AppDataUnix
 
     withConnection = withUnixClientConnection
+    {-# INLINE withConnection #-}
+
     destroyAllConnections = destroyAllUnixClientConnections
+    {-# INLINE destroyAllConnections #-}
 
 -- | Create connection pool for UNIX Sockets clients.
 createUnixClientPool
@@ -129,6 +133,7 @@ createUnixClientPool poolParams unixParams = UnixConnectionPool
     acquire = (, ()) <$> getSocketUnix (getPath unixParams)
     release = Socket.sClose
     handlerParams = Internal.fromClientSettingsUnix unixParams
+{-# INLINE createUnixClientPool #-}
 
 -- | Temporarily take a UNIX Sockets connection from a pool, run client with
 -- it, and return it to the pool afterwards. For details how connections are
@@ -140,6 +145,7 @@ withUnixClientConnection
     -> m r
 withUnixClientConnection (UnixConnectionPool pool) =
     Internal.withConnection pool . Internal.runUnixApp
+{-# INLINE withUnixClientConnection #-}
 
 -- | Destroy all UNIX Sockets connections that might be still open in a
 -- connection pool. This is useful when one needs to release all resources at
@@ -153,3 +159,4 @@ destroyAllUnixClientConnections
     -> IO ()
 destroyAllUnixClientConnections (UnixConnectionPool pool) =
     Internal.destroyAllConnections pool
+{-# INLINE destroyAllUnixClientConnections #-}

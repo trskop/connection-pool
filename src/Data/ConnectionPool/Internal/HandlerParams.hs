@@ -62,6 +62,7 @@ instance Default HandlerParams where
     def = HandlerParams
         { _readBufferSize = 32768
         }
+    {-# INLINE def #-}
 
 -- | Lens for accessing read buffer size that handler should use when reading
 -- data from connection.
@@ -70,3 +71,4 @@ instance Default HandlerParams where
 readBufferSize
     :: Functor f => (Int -> f Int) -> HandlerParams -> f HandlerParams
 readBufferSize = _readBufferSize ~@@^> \s b -> s{_readBufferSize = b}
+{-# INLINE readBufferSize #-}

@@ -97,6 +97,7 @@ resourcePool
     => (Pool (c, i) -> f (Pool (c', i')))
     -> ConnectionPool p c i -> f (ConnectionPool p c' i')
 resourcePool = _resourcePool ~@@^> \s b -> s{_resourcePool = b}
+{-# INLINE resourcePool #-}
 
 -- | Lens for accessing parameters passed down to connection handler. These
 -- information will usually be implementation specific. E.g. for
@@ -111,6 +112,7 @@ handlerParams
     -> ConnectionPool handlerParams c i
     -> f (ConnectionPool handlerParams' c i)
 handlerParams = _handlerParams ~@@^> \s b -> s{_handlerParams = b}
+{-# INLINE handlerParams #-}
 
 -- | Specialized wrapper for 'Pool.createPool', see its documentation for
 -- details.
@@ -150,6 +152,7 @@ createConnectionPool hParams acquire release params =
         { _resourcePool = pool
         , _handlerParams = hParams
         }
+{-# INLINE createConnectionPool #-}
 
 -- | Specialized wrapper for 'Pool.withResource'.
 --
@@ -161,6 +164,7 @@ withConnection
     -> m r
 withConnection ConnectionPool{..} f =
     Pool.withResource _resourcePool (uncurry (f _handlerParams))
+{-# INLINE withConnection #-}
 
 -- | Destroy all connections that might be still open in a connection pool.
 -- This is useful when one needs to release all resources at once and not to
@@ -172,6 +176,7 @@ withConnection ConnectionPool{..} f =
 destroyAllConnections :: ConnectionPool p c i -> IO ()
 destroyAllConnections ConnectionPool{_resourcePool} =
     Pool.destroyAllResources _resourcePool
+{-# INLINE destroyAllConnections #-}
 
 -- | /Since version 0.1.4./
 class HasConnectionPool p c i s | s -> p, s -> c, s -> i where
