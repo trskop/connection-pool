@@ -1,10 +1,14 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE TypeFamilies #-}
+
 #ifdef KIND_POLYMORPHIC_TYPEABLE_POLYKINDED_DATA_FAMILIES
+-- Since ConnectionPool data family is not poly-kinded on GHC <7.10, then
+-- neither can be ConnectionPoolFor type class.
 {-# LANGUAGE PolyKinds #-}
 #endif
-{-# LANGUAGE TypeFamilies #-}
+
 -- |
 -- Module:       $HEADER$
 -- Description:  Type class for common connection pool operations.
@@ -38,6 +42,8 @@ class
 #ifdef KIND_POLYMORPHIC_TYPEABLE_POLYKINDED_DATA_FAMILIES
     ConnectionPoolFor (protocol :: k)
 #else
+    -- Since ConnectionPool data family is not poly-kinded on GHC <7.10, then
+    -- neither can be ConnectionPoolFor type class.
     ConnectionPoolFor protocol
 #endif
   where

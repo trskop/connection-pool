@@ -8,6 +8,11 @@
 #endif
 
 #ifdef KIND_POLYMORPHIC_TYPEABLE_POLYKINDED_DATA_FAMILIES
+-- To be able to use poly-kinded ConnectionPool data family we need two things
+-- (i) poly-kinded Typeable class and (ii) compiler that is capable of deriving
+-- Typeable instance for poly-kinded data family. Otherwise we would break
+-- backward compatibility by not providing Typeable instance. Both of these
+-- work on GHC only on >=7.10.
 {-# LANGUAGE PolyKinds #-}
 #endif
 
@@ -52,13 +57,12 @@ data family ConnectionPool
     :: k -> *
 #else
     :: * -> *
+    -- To be able to use poly-kinded ConnectionPool data family we need two
+    -- things (i) poly-kinded Typeable class and (ii) compiler that is capable
+    -- of deriving Typeable instance for poly-kinded data family. Otherwise we
+    -- would break backward compatibility by not providing Typeable instance.
+    -- Both of these work on GHC only on >=7.10.
 #endif
-
--- To be able to use poly-kinded ConnectionPool data family we need two things
--- (i) poly-kinded Typeable class and (ii) compiler that is capable of deriving
--- Typeable instance for poly-kinded data family. Otherwise we would break
--- backward compatibility by not providing Typeable instance. Both of these
--- work on GHC only on >=7.10.
 
 #ifdef KIND_POLYMORPHIC_TYPEABLE
 deriving instance Typeable ConnectionPool
