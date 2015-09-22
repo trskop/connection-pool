@@ -114,13 +114,14 @@ import qualified Data.Streaming.Network.Internal as AppDataUnix
 -- for implementing a TCP specific
 -- 'Data.ConnectionPool.Internal.ConnectionPool.withConnection'.
 --
--- Definition changed in /version 0.1.3/.
+-- /Definition changed in version 0.1.3./
 runTcpApp
     :: MonadBaseControl IO m
     => Maybe SockAddr
     -> (AppData -> m r)
     -> HandlerParams
-    -- ^ Parameters passed down to connection handler @('AppData' -> m r)@.
+    -- ^ Parameters passed down to connection handler @('AppData' -> m r)@ as
+    -- part of definition of 'AppData'.
     -- /Since version 0.1.3./
     -> Socket
     -> SockAddr
@@ -135,7 +136,7 @@ runTcpApp localAddr app params sock addr =
 -- 'Data.Streaming.Network.runTCPServer' that provides only construction of
 -- 'AppData' and passing it to a callback function.
 --
--- Definition changed in /version 0.1.3/.
+-- /Definition changed in version 0.1.3./
 runTcpAppImpl
     :: MonadBaseControl IO m
     => Maybe SockAddr
@@ -189,12 +190,13 @@ fromClientSettings _tcpParams = def
 -- for implementing a UNIX Socket specific
 -- 'Data.ConnectionPool.Internal.ConnectionPool.withConnection'.
 --
--- Definition changed in /version 0.1.3/.
+-- /Definition changed in version 0.1.3./
 runUnixApp
     :: MonadBaseControl IO m
     => (AppDataUnix -> m r)
     -> HandlerParams
-    -- ^ Parameters passed down to connection handler @('AppDataUnix' -> m r)@.
+    -- ^ Parameters passed down to connection handler @('AppDataUnix' -> m r)@ as
+    -- part of definition of 'AppDataUnix'.
     -- /Since version 0.1.3./
     -> Socket
     -> ()
@@ -208,7 +210,7 @@ runUnixApp app params sock () = runUnixAppImpl sock bufSize app
 -- 'Data.Streaming.Network.runUnixServer' that provides only construction of
 -- 'AppDataUnix' and passing it to a callback function.
 --
--- Definition changed in /version 0.1.3/.
+-- /Definition changed in version 0.1.3./
 runUnixAppImpl
     :: MonadBaseControl IO m
     => Socket

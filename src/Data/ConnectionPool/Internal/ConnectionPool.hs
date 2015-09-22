@@ -26,11 +26,12 @@
 -- > import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
 --
 -- This module doesn't depend on
--- <http://hackage.haskell.org/package/streaming-commons streaming-commons>
--- and other non-HaskellPlatform packages with notable exception of
--- <http://hackage.haskell.org/package/resource-pool resource-pool>. Another
--- notable thing is that this package is not OS specific. Please, bear this in
--- mind when doing modifications.
+-- <http://hackage.haskell.org/package/streaming-commons streaming-commons> and
+-- other non-HaskellPlatform packages with exception of two packages
+-- <http://hackage.haskell.org/package/resource-pool resource-pool> and
+-- <http://hackage.haskell.org/package/between between>. Another notable thing
+-- is that this package is not OS specific. Please, bear this in mind when
+-- doing modifications.
 module Data.ConnectionPool.Internal.ConnectionPool
     ( ConnectionPool(ConnectionPool, _handlerParams, _resourcePool)
     , resourcePool
@@ -67,7 +68,7 @@ import qualified Data.ConnectionPool.Internal.ResourcePoolParams
 
 -- | Simple specialized wrapper for 'Pool'.
 --
--- Definition changed in /version 0.1.3 and 0.1.4/.
+-- /Definition changed in version 0.1.3 and 0.1.4/.
 data ConnectionPool handlerParams connection connectionInfo = ConnectionPool
     { _resourcePool :: !(Pool (connection, connectionInfo))
     -- ^ See 'resourcePool' for details.
