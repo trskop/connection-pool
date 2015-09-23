@@ -140,8 +140,14 @@ import Data.ConnectionPool.Internal.Unix
 -- module Main (main)
 --   where
 --
--- import Control.Monad (void)
--- import Control.Concurrent (forkIO, threadDelay)
+-- import Control.Concurrent
+--     ( forkIO
+--     , newEmptyMVar
+--     , putMVar
+--     , readMVar
+--     , threadDelay
+--     )
+-- import Control.Monad (void, mapM_)
 -- import System.Environment (getArgs)
 --
 -- import Control.Lens ((.~), (&))
@@ -164,11 +170,16 @@ import Data.ConnectionPool.Internal.Unix
 --     pool <- 'createTcpClientPool'
 --         (poolParams numStripes numPerStripe)
 --         ('Data.Streaming.Network.clientSettingsTCP' (read port) \"127.0.0.1\")
+--     thread1 <- newEmptyMVar
+--     thread2 <- newEmptyMVar
 --     void . forkIO . 'withTcpClientConnection' pool $ \\appData -> do
---        threadDelay 100
+--        threadDelay 1000
 --        'Data.Streaming.Network.appWrite' appData \"1: I'm alive!\\n\"
---     void . forkIO . 'withTcpClientConnection' pool $ \\appData ->
+--        putMVar thread1 ()
+--     void . forkIO . 'withTcpClientConnection' pool $ \\appData -> do
 --        'Data.Streaming.Network.appWrite' appData \"2: I'm alive!\\n\"
+--        putMVar thread2 ()
+--     mapM_ readMVar [thread1, thread2]
 --   where
 --     poolParams m n =
 --         'Data.Default.Class.def' & 'numberOfStripes' .~ read m
@@ -223,8 +234,14 @@ import Data.ConnectionPool.Internal.Unix
 -- module Main (main)
 --   where
 --
--- import Control.Concurrent (forkIO, threadDelay)
--- import Control.Monad (void)
+-- import Control.Concurrent
+--     ( forkIO
+--     , newEmptyMVar
+--     , putMVar
+--     , readMVar
+--     , threadDelay
+--     )
+-- import Control.Monad (void, mapM_)
 -- import System.Environment (getArgs)
 --
 -- import Control.Lens ((.~), (&))
@@ -247,11 +264,16 @@ import Data.ConnectionPool.Internal.Unix
 --     pool <- 'createUnixClientPool'
 --         (poolParams numStripes numPerStripe)
 --         ('Data.Streaming.Network.clientSettingsUnix' socket)
+--     thread1 <- newEmptyMVar
+--     thread2 <- newEmptyMVar
 --     void . forkIO . 'withUnixClientConnection' pool $ \\appData -> do
 --        threadDelay 100
 --        'Data.Streaming.Network.appWrite' appData \"1: I'm alive!\\n\"
---     void . forkIO . 'withUnixClientConnection' pool $ \\appData ->
+--        putMVar thread1 ()
+--     void . forkIO . 'withUnixClientConnection' pool $ \\appData -> do
 --        'Data.Streaming.Network.appWrite' appData \"2: I'm alive!\\n\"
+--        putMVar thread2 ()
+--     mapM_ readMVar [thread1, thread2]
 --   where
 --     poolParams m n =
 --         'Data.Default.Class.def' & 'numberOfStripes' .~ read m
