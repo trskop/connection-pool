@@ -122,7 +122,7 @@ stripe, then we will get:
     2: I'm alive!
     1: I'm alive!
 
-The reason for this is that we use `threadDelay 100` in the first executed
+The reason for this is that we use `threadDelay 1000` in the first executed
 thread. So when we have only one stripe and one connection per stripe, then we
 have only one connection in the pool. Therefore when the first thread executes
 and acquires a connection, then all the other threads (the other one in above
