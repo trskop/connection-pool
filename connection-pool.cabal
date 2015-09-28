@@ -88,11 +88,15 @@ library
     , between >= 0.10.0.0
     -- ^ This package uses strict API which was introduced in version 0.10.0.0.
     , data-default-class == 0.0.*
-    , monad-control >= 0.2.0.1
-      -- Version boundary same as resource-pool (version 0.2.0.0) has.
+    , monad-control >= 0.3
+      -- Package resource-pool depends on monad-control >=0.2.0.1 since
+      -- resource-pool version 0.2.0.0, but this package doesn't make the
+      -- effort to handle changes in monad-control API and therefore it limits
+      -- its dependencies to >=0.3.
     , resource-pool >= 0.2.0.0 && < 1
-      -- Version 0.2.0.0 was the first that used monad-control package.
-      -- At the time of writing (version 0.2.3.0) used subset of API is stable.
+      -- Version 0.2.0.0 of resource-pool was the first that used monad-control
+      -- package. At the time of writing (version 0.2.3.0) used subset of API
+      -- is stable.
     , streaming-commons >= 0.1.3 && < 0.2
       -- First version that had getSocketFamilyTCP function and also Earlier
       -- versions have different definition of ClientSettings. Those two things
