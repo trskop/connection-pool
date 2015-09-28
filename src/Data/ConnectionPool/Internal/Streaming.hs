@@ -73,7 +73,8 @@ import Data.Streaming.Network.Internal
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
     , AppDataUnix(AppDataUnix)
-#if MIN_VERSION_streaming_commons(0,1,13)
+#if MIN_VERSION_streaming_commons(0,1,13) \
+  && !MIN_VERSION_streaming_commons(0,1,14)
     -- Until streaming-commons 0.1.13, read buffer size was fixed. For some
     -- mistifying reason there is no
     --
@@ -232,7 +233,17 @@ fromClientSettingsUnix :: ClientSettingsUnix -> HandlerParams
 fromClientSettingsUnix _unixParams = def
 #if MIN_VERSION_streaming_commons(0,1,13)
     -- Until streaming-commons 0.1.13, read buffer size was fixed.
-    { _readBufferSize = clientReadBufferSizeUnix _unixParams
+    { _readBufferSize =
+#if MIN_VERSION_streaming_commons(0,1,14)
+        -- ClientSettingsUnix instance for HasReadBufferSize was introduced in
+        -- streaming-commons version 0.1.14 and it provides much more stable
+        -- API then accessor.
+        getReadBufferSize _unixParams
+#else
+        -- In streaming-commons 0.1.13 we have to use clientReadBufferSizeUnix
+        -- accessor of ClientSettingsUnix.
+        clientReadBufferSizeUnix _unixParams
+#endif
     }
 #endif
     -- streaming-commons >= 0.1.13
