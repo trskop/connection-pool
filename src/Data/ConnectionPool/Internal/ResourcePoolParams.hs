@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE RecordWildCards #-}
 -- |
@@ -55,6 +56,7 @@ import Data.List ((++))
 import Data.Ord (Ord((<)))
 import Data.String (String)
 import Data.Typeable (Typeable)
+import GHC.Generics (Generic)
 import Text.Show (Show(show))
 
 import Data.Time.Clock (NominalDiffTime)
@@ -70,7 +72,7 @@ data ResourcePoolParams = ResourcePoolParams
     , _resourceIdleTimeout :: !NominalDiffTime
     , _numberOfResourcesPerStripe :: !Int
     }
-  deriving (Data, Show, Typeable)
+  deriving (Data, Generic, Show, Typeable)
 
 -- | @
 -- 'numberOfStripes' = 1
