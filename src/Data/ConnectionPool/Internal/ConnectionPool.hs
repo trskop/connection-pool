@@ -33,18 +33,27 @@
 -- is that this package is not OS specific. Please, bear this in mind when
 -- doing modifications.
 module Data.ConnectionPool.Internal.ConnectionPool
-    ( ConnectionPool(ConnectionPool, _handlerParams, _resourcePool)
+    (
+    -- * Data Type For Building Connection Pools
+      ConnectionPool(ConnectionPool, _handlerParams, _resourcePool)
+    -- ** Lenses
     , resourcePool
     , handlerParams
+    , HasConnectionPool(connectionPool)
+
+    -- * Lifted Resource Pool Operations
+    --
+    -- | Operations on 'Pool' lifted to work on 'ConnectionPool' data type.
     , createConnectionPool
     , destroyAllConnections
     , withConnection
-    , HasConnectionPool(connectionPool)
+    , tryWithConnection
     )
   where
 
 import Data.Function ((.))
 import Data.Functor (Functor, (<$>))
+import Data.Maybe (Maybe)
 import Data.Tuple (fst, uncurry)
 import Data.Typeable (Typeable)
 import GHC.Generics (Generic)
@@ -58,6 +67,7 @@ import Data.Pool (Pool)
 import qualified Data.Pool as Pool
     ( createPool
     , destroyAllResources
+    , tryWithResource
     , withResource
     )
 
@@ -158,7 +168,7 @@ createConnectionPool hParams acquire release params =
 
 -- | Specialized wrapper for 'Pool.withResource'.
 --
--- /Changed in 0.1.4./
+-- /Changed in version 0.1.4./
 withConnection
     :: MonadBaseControl IO m
     => ConnectionPool handlerParams connection connectionInfo
@@ -167,6 +177,18 @@ withConnection
 withConnection ConnectionPool{..} f =
     Pool.withResource _resourcePool (uncurry (f _handlerParams))
 {-# INLINE withConnection #-}
+
+-- | Specialized wrapper for 'Pool.tryWithResource'.
+--
+-- /Since version 0.1.4./
+tryWithConnection
+    :: MonadBaseControl IO m
+    => ConnectionPool handlerParams connection connectionInfo
+    -> (handlerParams -> connection -> connectionInfo -> m r)
+    -> m (Maybe r)
+tryWithConnection ConnectionPool{..} f =
+    Pool.tryWithResource _resourcePool (uncurry (f _handlerParams))
+{-# INLINE tryWithConnection #-}
 
 -- | Destroy all connections that might be still open in a connection pool.
 -- This is useful when one needs to release all resources at once and not to

@@ -11,6 +11,8 @@
 * `ConnectionPool` data family moved in to its own module
   `Data.ConnectionPool.Family`, as a consequence it became part of stable API.
   (**change**)
+* Introducing `tryWithUnixClientConnection` and `tryWithTcpClientConnection`
+  functions. (**new**)
 * Providing instances of `Generic` and `Show` where ever possible and
   reasonable. This is a backwards compatible change. (**new**)
 * Internal `ConnectionPool` data type is now more generic because `Socket`

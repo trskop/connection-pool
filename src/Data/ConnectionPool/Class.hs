@@ -26,6 +26,7 @@ module Data.ConnectionPool.Class
     )
   where
 
+import Data.Maybe (Maybe)
 import System.IO (IO)
 
 import Control.Monad.Trans.Control (MonadBaseControl)
@@ -59,6 +60,20 @@ class
         => ConnectionPool protocol
         -> (HandlerData protocol -> m r)
         -> m r
+
+    -- | Similar to 'withConnection', but only performs action if a connection
+    -- could be taken from the pool /without blocking./ Otherwise,
+    -- 'tryWithResource' returns immediately with 'Nothing' (ie. the action
+    -- function is not called). Conversely, if a connection can be acquired
+    -- from the pool without blocking, the action is performed and it's result
+    -- is returned, wrapped in a 'Just'.
+    --
+    -- /Since version 0.1.4./
+    tryWithConnection
+        :: MonadBaseControl IO m
+        => ConnectionPool protocol
+        -> (HandlerData protocol -> m r)
+        -> m (Maybe r)
 
     -- | Destroy all connections that might be still open in a connection pool.
     -- This is useful when one needs to release all resources at once and not

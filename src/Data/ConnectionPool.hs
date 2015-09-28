@@ -70,6 +70,7 @@ module Data.ConnectionPool
     , AppData
     , createTcpClientPool
     , withTcpClientConnection
+    , tryWithTcpClientConnection
     , destroyAllTcpClientConnections
 
 #ifndef WINDOWS
@@ -81,6 +82,7 @@ module Data.ConnectionPool
     , AppDataUnix
     , createUnixClientPool
     , withUnixClientConnection
+    , tryWithUnixClientConnection
     , destroyAllUnixClientConnections
 #endif
     -- !WINDOWS
@@ -115,8 +117,9 @@ import Data.ConnectionPool.Internal.ResourcePoolParams
 import Data.ConnectionPool.Internal.TCP
     ( TcpClient
     , createTcpClientPool
-    , withTcpClientConnection
     , destroyAllTcpClientConnections
+    , tryWithTcpClientConnection
+    , withTcpClientConnection
     )
 #ifndef WINDOWS
     -- Windows doesn't support UNIX Sockets.
@@ -124,6 +127,7 @@ import Data.ConnectionPool.Internal.Unix
     ( UnixClient
     , createUnixClientPool
     , destroyAllUnixClientConnections
+    , tryWithUnixClientConnection
     , withUnixClientConnection
     )
 #endif

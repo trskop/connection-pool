@@ -39,6 +39,7 @@ module Data.ConnectionPool.Internal.TCP
 
     , createTcpClientPool
     , withTcpClientConnection
+    , tryWithTcpClientConnection
     , destroyAllTcpClientConnections
     )
   where
@@ -69,8 +70,9 @@ import Data.ConnectionPool.Internal.ConnectionPool
 import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
     ( ConnectionPool
     , createConnectionPool
-    , withConnection
     , destroyAllConnections
+    , tryWithConnection
+    , withConnection
     )
 import Data.ConnectionPool.Internal.HandlerParams (HandlerParams)
 import qualified Data.ConnectionPool.Internal.Streaming as Internal
@@ -116,6 +118,9 @@ instance ConnectionPoolFor TcpClient where
     withConnection = withTcpClientConnection
     {-# INLINE withConnection #-}
 
+    tryWithConnection = tryWithTcpClientConnection
+    {-# INLINE tryWithConnection #-}
+
     destroyAllConnections = destroyAllTcpClientConnections
     {-# INLINE destroyAllConnections #-}
 
@@ -143,6 +148,23 @@ withTcpClientConnection
 withTcpClientConnection (TcpConnectionPool pool) =
     Internal.withConnection pool . Internal.runTcpApp Nothing
 {-# INLINE withTcpClientConnection #-}
+
+-- | Similar to 'withConnection', but only performs action if a TCP connection
+-- could be taken from the pool /without blocking./ Otherwise,
+-- 'tryWithResource' returns immediately with 'Nothing' (ie. the action
+-- function is not called). Conversely, if a connection can be acquired from
+-- the pool without blocking, the action is performed and it's result is
+-- returned, wrapped in a 'Just'.
+--
+-- /Since version 0.1.4./
+tryWithTcpClientConnection
+    :: (MonadBaseControl io m, io ~ IO)
+    => ConnectionPool TcpClient
+    -> (AppData -> m r)
+    -> m (Maybe r)
+tryWithTcpClientConnection (TcpConnectionPool pool) =
+    Internal.tryWithConnection pool . Internal.runTcpApp Nothing
+{-# INLINE tryWithTcpClientConnection #-}
 
 -- | Destroy all TCP connections that might be still open in a connection pool.
 -- This is useful when one needs to release all resources at once and not to

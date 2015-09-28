@@ -43,12 +43,14 @@ module Data.ConnectionPool.Internal.Unix
 
     , createUnixClientPool
     , withUnixClientConnection
+    , tryWithUnixClientConnection
     , destroyAllUnixClientConnections
     )
   where
 
 import Data.Function ((.), const)
 import Data.Functor ((<$>))
+import Data.Maybe (Maybe)
 import Data.Typeable (Typeable)
 import GHC.Generics (Generic)
 import Text.Show (Show)
@@ -74,8 +76,9 @@ import Data.ConnectionPool.Internal.ConnectionPool
 import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
     ( ConnectionPool
     , createConnectionPool
-    , withConnection
     , destroyAllConnections
+    , tryWithConnection
+    , withConnection
     )
 import Data.ConnectionPool.Internal.HandlerParams (HandlerParams)
 import Data.ConnectionPool.Internal.ResourcePoolParams (ResourcePoolParams)
@@ -119,6 +122,9 @@ instance ConnectionPoolFor UnixClient where
     withConnection = withUnixClientConnection
     {-# INLINE withConnection #-}
 
+    tryWithConnection = tryWithUnixClientConnection
+    {-# INLINE tryWithConnection #-}
+
     destroyAllConnections = destroyAllUnixClientConnections
     {-# INLINE destroyAllConnections #-}
 
@@ -146,6 +152,23 @@ withUnixClientConnection
 withUnixClientConnection (UnixConnectionPool pool) =
     Internal.withConnection pool . Internal.runUnixApp
 {-# INLINE withUnixClientConnection #-}
+
+-- | Similar to 'withConnection', but only performs action if a UNIX Sockets
+-- connection could be taken from the pool /without blocking./ Otherwise,
+-- 'tryWithResource' returns immediately with 'Nothing' (ie. the action
+-- function is not called). Conversely, if a connection can be acquired from
+-- the pool without blocking, the action is performed and it's result is
+-- returned, wrapped in a 'Just'.
+--
+-- /Since version 0.1.4./
+tryWithUnixClientConnection
+    :: (MonadBaseControl io m, io ~ IO)
+    => ConnectionPool UnixClient
+    -> (AppDataUnix -> m r)
+    -> m (Maybe r)
+tryWithUnixClientConnection (UnixConnectionPool pool) =
+    Internal.tryWithConnection pool . Internal.runUnixApp
+{-# INLINE tryWithUnixClientConnection #-}
 
 -- | Destroy all UNIX Sockets connections that might be still open in a
 -- connection pool. This is useful when one needs to release all resources at
