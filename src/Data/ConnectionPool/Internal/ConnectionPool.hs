@@ -68,7 +68,8 @@ import qualified Data.ConnectionPool.Internal.ResourcePoolParams
 
 -- | Simple specialized wrapper for 'Pool'.
 --
--- /Definition changed in version 0.1.3 and 0.1.4/.
+-- /Definition changed in version 0.1.3 and 0.1.4./
+-- /Instance for 'Generic' introduced in version 0.1.4./
 data ConnectionPool handlerParams connection connectionInfo = ConnectionPool
     { _resourcePool :: !(Pool (connection, connectionInfo))
     -- ^ See 'resourcePool' for details.
