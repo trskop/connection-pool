@@ -89,7 +89,7 @@ module Data.ConnectionPool
 
     -- * Polymorphic Interface
     --
-    -- | /Since version 0.1.4./
+    -- | /Since version 0.2./
     , ConnectionPoolFor(..)
     )
   where

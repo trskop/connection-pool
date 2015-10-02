@@ -32,7 +32,7 @@
 --
 -- > import qualified Data.ConnectionPool.Internal.TCP as Internal
 --
--- /Module introduced in version 0.1.4./
+-- /Module introduced in version 0.2./
 module Data.ConnectionPool.Internal.TCP
     ( ConnectionPool(..)
     , TcpClient
@@ -85,19 +85,19 @@ import Data.ConnectionPool.Internal.ResourcePoolParams (ResourcePoolParams)
 
 -- | Type tag used to specialize connection pool for TCP clients.
 --
--- /Instance for 'Generic' introduced in version 0.1.4./
+-- /Instance for 'Generic' introduced in version 0.2./
 data TcpClient
   deriving (Generic, Typeable)
 
 -- | Connection pool for TCP clients.
 --
--- /Definition changed in version 0.1.3 and 0.1.4./
--- /Instances for 'Generic' and 'Show' introduced in version 0.1.4./
+-- /Definition changed in version 0.1.3 and 0.2./
+-- /Instances for 'Generic' and 'Show' introduced in version 0.2./
 newtype instance ConnectionPool TcpClient =
     TcpConnectionPool (Internal.ConnectionPool HandlerParams Socket SockAddr)
   deriving (Generic, Show)
 
--- | /Since version 0.1.4./
+-- | /Since version 0.2./
 instance
     HasConnectionPool HandlerParams Socket SockAddr (ConnectionPool TcpClient)
   where
@@ -111,7 +111,7 @@ instance
 -- 'destroyAllConnections' = 'destroyAllTcpClientConnections'
 -- @
 --
--- /Since version 0.1.4./
+-- /Since version 0.2./
 instance ConnectionPoolFor TcpClient where
     type HandlerData TcpClient = AppData
 
@@ -156,7 +156,7 @@ withTcpClientConnection (TcpConnectionPool pool) =
 -- the pool without blocking, the action is performed and it's result is
 -- returned, wrapped in a 'Just'.
 --
--- /Since version 0.1.4./
+-- /Since version 0.2./
 tryWithTcpClientConnection
     :: (MonadBaseControl io m, io ~ IO)
     => ConnectionPool TcpClient

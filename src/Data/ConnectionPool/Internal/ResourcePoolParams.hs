@@ -68,7 +68,7 @@ import Data.Function.Between.Strict ((~@@^>))
 -- | Parameters of resource pool that describe things like its internal
 -- structure. See 'Data.Pool.createPool' for details.
 --
--- /Instance for 'Generic' introduced in version 0.1.4./
+-- /Instance for 'Generic' introduced in version 0.2./
 data ResourcePoolParams = ResourcePoolParams
     { _numberOfStripes :: !Int
     , _resourceIdleTimeout :: !NominalDiffTime

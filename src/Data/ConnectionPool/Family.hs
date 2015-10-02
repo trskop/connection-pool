@@ -49,7 +49,7 @@ import Data.Typeable (Typeable)
 
 -- | Family of connection pools parametrised by transport protocol.
 --
--- /Definition changed version 0.1.4 to be kind polymorphic (only on GHC >=/
+-- /Definition changed version 0.2 to be kind polymorphic (only on GHC >=/
 -- /7.10) and became part of stable API by being moved in to/
 -- /"Data.ConnectionPool.Family" module./
 data family ConnectionPool

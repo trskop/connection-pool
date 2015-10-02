@@ -78,13 +78,13 @@ import qualified Data.ConnectionPool.Internal.ResourcePoolParams
 
 -- | Simple specialized wrapper for 'Pool'.
 --
--- /Definition changed in version 0.1.3 and 0.1.4./
--- /Instance for 'Generic' introduced in version 0.1.4./
+-- /Definition changed in version 0.1.3 and 0.2./
+-- /Instance for 'Generic' introduced in version 0.2./
 data ConnectionPool handlerParams connection connectionInfo = ConnectionPool
     { _resourcePool :: !(Pool (connection, connectionInfo))
     -- ^ See 'resourcePool' for details.
     --
-    -- /Since version 0.1.3; changed in 0.1.4./
+    -- /Since version 0.1.3; changed in 0.2./
     , _handlerParams :: !handlerParams
     -- ^ See 'handlerParams' for details.
     --
@@ -103,7 +103,7 @@ instance Show handlerParams => Show (ConnectionPool handlerParams c i) where
 -- @connectionInfo@ is a protocol specific information associated with the same
 -- network connection as the @connection@ is.
 --
--- /Since version 0.1.3; changed in 0.1.4./
+-- /Since version 0.1.3; changed in 0.2./
 resourcePool
     :: Functor f
     => (Pool (c, i) -> f (Pool (c', i')))
@@ -129,7 +129,7 @@ handlerParams = _handlerParams ~@@^> \s b -> s{_handlerParams = b}
 -- | Specialized wrapper for 'Pool.createPool', see its documentation for
 -- details.
 --
--- Definition changed in /version 0.1.3 and version 0.1.4/.
+-- Definition changed in /version 0.1.3 and version 0.2/.
 createConnectionPool
     :: handlerParams
     -- ^ Data type passed down to individual connection handlers.
@@ -141,11 +141,11 @@ createConnectionPool
     -- we pass as a sencond value in a tuple. Such information are considered
     -- read only and aren't passed to release function (see next argument).
     --
-    -- /Changed in version 0.1.4./
+    -- /Changed in version 0.2./
     -> (connection -> IO ())
     -- ^ Release a connection which is represented by a @connection@.
     --
-    -- /Changed in version 0.1.4./
+    -- /Changed in version 0.2./
     -> ResourcePoolParams
     -- ^ Data type representing all 'Pool.createPool' parameters that describe
     -- internal 'Pool' parameters.
@@ -168,7 +168,7 @@ createConnectionPool hParams acquire release params =
 
 -- | Specialized wrapper for 'Pool.withResource'.
 --
--- /Changed in version 0.1.4./
+-- /Changed in version 0.2./
 withConnection
     :: MonadBaseControl IO m
     => ConnectionPool handlerParams connection connectionInfo
@@ -180,7 +180,7 @@ withConnection ConnectionPool{..} f =
 
 -- | Specialized wrapper for 'Pool.tryWithResource'.
 --
--- /Since version 0.1.4./
+-- /Since version 0.2./
 tryWithConnection
     :: MonadBaseControl IO m
     => ConnectionPool handlerParams connection connectionInfo
@@ -202,7 +202,7 @@ destroyAllConnections ConnectionPool{_resourcePool} =
     Pool.destroyAllResources _resourcePool
 {-# INLINE destroyAllConnections #-}
 
--- | /Since version 0.1.4./
+-- | /Since version 0.2./
 class HasConnectionPool p c i s | s -> p, s -> c, s -> i where
     -- | Lens for accessing 'ConnectionPool' wrapped in a data type.
     connectionPool

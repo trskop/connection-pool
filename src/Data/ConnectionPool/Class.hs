@@ -38,7 +38,7 @@ import Data.ConnectionPool.Family (ConnectionPool)
 -- doesn't handle connection pool creation, which is best left to dedicated
 -- smart constructors.
 --
--- /Since version 0.1.4./
+-- /Since version 0.2./
 class
 #ifdef KIND_POLYMORPHIC_TYPEABLE_POLYKINDED_DATA_FAMILIES
     ConnectionPoolFor (protocol :: k)
@@ -54,7 +54,7 @@ class
     -- | Temporarily take a connection from a pool, run handler with it, and
     -- return it to the pool afterwards.
     --
-    -- /Since version 0.1.4./
+    -- /Since version 0.2./
     withConnection
         :: MonadBaseControl IO m
         => ConnectionPool protocol
@@ -68,7 +68,7 @@ class
     -- from the pool without blocking, the action is performed and it's result
     -- is returned, wrapped in a 'Just'.
     --
-    -- /Since version 0.1.4./
+    -- /Since version 0.2./
     tryWithConnection
         :: MonadBaseControl IO m
         => ConnectionPool protocol
@@ -79,5 +79,5 @@ class
     -- This is useful when one needs to release all resources at once and not
     -- to wait for idle timeout to be reached.
     --
-    -- /Since version 0.1.4./
+    -- /Since version 0.2./
     destroyAllConnections :: ConnectionPool protocol -> IO ()

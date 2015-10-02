@@ -1,8 +1,9 @@
 # ChangeLog / ReleaseNotes
 
 
-## Version 0.1.4
+## Version 0.2
 
+* Release provides backward compatible API with 0.1 branch.
 * Introducing `ConnectionPoolFor` type class which has instances for both
   `ConnectionPool TcpClient` and `ConnectionPool UnixClient`. Class is located
   in its own module `Data.ConnectionPool.Class`, therefore it is part of stable
@@ -27,7 +28,7 @@
   abstracted away as much as possible. Best result is if only direct references
   to resource-pool and streaming-commons remain. (**change**)
 * Uploaded to [Hackage][]:
-  <http://hackage.haskell.org/package/connection-pool-0.1.4>
+  <http://hackage.haskell.org/package/connection-pool-0.2>
 
 
 ## Version 0.1.3

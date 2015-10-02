@@ -36,7 +36,7 @@
 -- This package is OS specific, because Windows doesn't support UNIX Sockets.
 -- Please, bear this in mind when doing modifications.
 --
--- /Module introduced in version 0.1.4./
+-- /Module introduced in version 0.2./
 module Data.ConnectionPool.Internal.Unix
     ( ConnectionPool(..)
     , UnixClient
@@ -90,19 +90,19 @@ import qualified Data.ConnectionPool.Internal.Streaming as Internal
 
 -- | Type tag used to specialize connection pool for UNIX Socket clients.
 --
--- /Instance for 'Generic' introduced in version 0.1.4./
+-- /Instance for 'Generic' introduced in version 0.2./
 data UnixClient
   deriving (Generic, Typeable)
 
 -- | Connection pool for UNIX Socket clients.
 --
--- /Definition changed in version 0.1.3 and 0.1.4./
--- /Instances for 'Generic' and 'Show' introduced in version 0.1.4./
+-- /Definition changed in version 0.1.3 and 0.2./
+-- /Instances for 'Generic' and 'Show' introduced in version 0.2./
 newtype instance ConnectionPool UnixClient =
     UnixConnectionPool (Internal.ConnectionPool HandlerParams Socket ())
   deriving (Generic, Show)
 
--- | /Since version 0.1.4./
+-- | /Since version 0.2./
 instance HasConnectionPool HandlerParams Socket () (ConnectionPool UnixClient)
   where
     connectionPool = const UnixConnectionPool <^@~ \(UnixConnectionPool a) -> a
@@ -115,7 +115,7 @@ instance HasConnectionPool HandlerParams Socket () (ConnectionPool UnixClient)
 -- 'destroyAllConnections' = 'destroyAllUnixClientConnections'
 -- @
 --
--- /Since version 0.1.4./
+-- /Since version 0.2./
 instance ConnectionPoolFor UnixClient where
     type HandlerData UnixClient = AppDataUnix
 
@@ -160,7 +160,7 @@ withUnixClientConnection (UnixConnectionPool pool) =
 -- the pool without blocking, the action is performed and it's result is
 -- returned, wrapped in a 'Just'.
 --
--- /Since version 0.1.4./
+-- /Since version 0.2./
 tryWithUnixClientConnection
     :: (MonadBaseControl io m, io ~ IO)
     => ConnectionPool UnixClient
