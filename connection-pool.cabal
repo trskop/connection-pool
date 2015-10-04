@@ -128,7 +128,7 @@ library
     -- things (i) poly-kinded Typeable class and (ii) compiler that is capable
     -- of deriving Typeable instance for poly-kinded data family. Otherwise we
     -- would break backward compatibility by not providing Typeable instance.
-    -- Both of these work on GHC only on >=7.10.
+    -- Both of these work on GHC only since version 7.10.
     cpp-options:        -DKIND_POLYMORPHIC_TYPEABLE_POLYKINDED_DATA_FAMILIES
 
   ghc-options:          -Wall
