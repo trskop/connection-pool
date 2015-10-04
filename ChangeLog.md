@@ -3,7 +3,7 @@
 
 ## Version 0.2
 
-* Release provides backward compatible API with 0.1 branch.
+* Release has backward compatible API with 0.1 branch.
 * Introducing `ConnectionPoolFor` type class which has instances for both
   `ConnectionPool TcpClient` and `ConnectionPool UnixClient`. Class is located
   in its own module `Data.ConnectionPool.Class`, therefore it is part of stable
