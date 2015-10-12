@@ -323,6 +323,10 @@ import Data.ConnectionPool.Internal.Unix
 
 -- $constructingConnectionPool
 --
+-- This section describes basic principles that are shared among provided
+-- connection pools. It can also provide basic information in case of creating
+-- new connection pool while using API and types from this package.
+--
 -- For each protocol we provide separate function that creates 'ConnectionPool'
 -- instance. For TCP clients it's 'createTcpClientPool' and for UNIX Socket
 -- clients it's 'createUnixClientPool' (not available on Windows).
@@ -365,13 +369,14 @@ import Data.ConnectionPool.Internal.Unix
 -- @
 --
 -- Where functions @&@ and @.~@ are defined by
--- <http://hackage.haskell.org/package/lens lens> package.
+-- <http://hackage.haskell.org/package/lens lens> package. Function
+-- 'Data.Function.&' is also available in base >= 4.8.
 
 -- $resourcePoolParamsLenses
 --
 -- For details on how to use leses as these see
 -- <http://hackage.haskell.org/package/lens lens> package where you might find
--- a good starting point documentation for you.
+-- a good starting point.
 
 -- $resourcePoolParamsValidation
 --
@@ -388,4 +393,5 @@ import Data.ConnectionPool.Internal.Unix
 --
 -- Most usually one would use 'Data.Default.def' instead of @someParams@.
 -- Functions @&@ and @.~@ are defined in
--- <http://hackage.haskell.org/package/lens lens> package.
+-- <http://hackage.haskell.org/package/lens lens> package. Function
+-- 'Data.Function.&' is also available in base >= 4.8.
