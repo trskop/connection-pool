@@ -3,7 +3,7 @@ version:                0.2.1
 synopsis:
   Connection pool built on top of resource-pool and streaming-commons.
 description:
-  Connection poll is a family specialised resource pools. Currently package
+  Connection poll is a family of specialised resource pools. Currently package
   provides two variants:
   .
   1. pool for TCP client connections,

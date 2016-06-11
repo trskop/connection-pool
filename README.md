@@ -13,7 +13,7 @@ Connection Pool
 Description
 -----------
 
-Connection pool is a family specialised resource pools. Currently package
+Connection pool is a family of specialised resource pools. Currently package
 provides two
 
 1. pool for TCP client connections,
