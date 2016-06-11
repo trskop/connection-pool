@@ -13,7 +13,7 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Family of connection pools specialized by transport protocol.
--- Copyright:    (c) 2014-2015, Peter Trško
+-- Copyright:    (c) 2014-2016, Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
@@ -68,7 +68,14 @@ import Data.Streaming.Network
     , getSocketUnix
     )
 
-import Data.ConnectionPool.Class (ConnectionPoolFor(..))
+import Data.ConnectionPool.Class
+    ( ConnectionPoolFor
+        ( HandlerData
+        , destroyAllConnections
+        , tryWithConnection
+        , withConnection
+        )
+    )
 import Data.ConnectionPool.Family (ConnectionPool)
 import Data.ConnectionPool.Internal.ConnectionPool
     ( HasConnectionPool(connectionPool)

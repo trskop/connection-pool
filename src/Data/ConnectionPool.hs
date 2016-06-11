@@ -3,7 +3,7 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Connection pools for various transport protocols.
--- Copyright:    (c) 2014-2015, Peter Trško
+-- Copyright:    (c) 2014-2016, Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
@@ -105,7 +105,14 @@ import Data.Streaming.Network
     -- !WINDOWS
     )
 
-import Data.ConnectionPool.Class (ConnectionPoolFor(..))
+import Data.ConnectionPool.Class
+    ( ConnectionPoolFor
+        ( HandlerData
+        , destroyAllConnections
+        , tryWithConnection
+        , withConnection
+        )
+    )
 import Data.ConnectionPool.Family (ConnectionPool)
 import Data.ConnectionPool.Internal.ResourcePoolParams
     ( ResourcePoolParams
