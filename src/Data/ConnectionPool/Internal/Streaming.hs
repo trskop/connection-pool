@@ -4,12 +4,12 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Helper functions that aren't provided by streaming-commons.
--- Copyright:    (c) 2014-2015, Peter Trško
+-- Copyright:    (c) 2014-2016, Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  CPP, FlexibleContexts, NoImplicitPrelude
+-- Portability:  GHC specific language extensions.
 --
 -- Module defines helper functions that would be ideally provided by
 -- <http://hackage.haskell.org/package/streaming-commons streaming-commons>
@@ -54,7 +54,6 @@ import Data.Int (Int)
 import Data.Maybe (Maybe(Just))
 import System.IO (IO)
 
-import Control.Monad.Trans.Control (MonadBaseControl)
 import Network.Socket (Socket, SockAddr, sClose)
 import Network.Socket.ByteString (sendAll)
 
@@ -117,10 +116,9 @@ import qualified Data.Streaming.Network.Internal as AppDataUnix
 -- for implementing a TCP specific
 -- 'Data.ConnectionPool.Internal.ConnectionPool.withConnection'.
 --
--- /Definition changed in version 0.1.3./
+-- /Definition changed in version 0.1.3 and 0.2.1./
 runTcpApp
-    :: MonadBaseControl IO m
-    => Maybe SockAddr
+    :: Maybe SockAddr
     -> (AppData -> m r)
     -> HandlerParams
     -- ^ Parameters passed down to connection handler @('AppData' -> m r)@ as
@@ -139,10 +137,9 @@ runTcpApp localAddr app params sock addr =
 -- 'Data.Streaming.Network.runTCPServer' that provides only construction of
 -- 'AppData' and passing it to a callback function.
 --
--- /Definition changed in version 0.1.3./
+-- /Definition changed in version 0.1.3 and 0.2.1./
 runTcpAppImpl
-    :: MonadBaseControl IO m
-    => Maybe SockAddr
+    :: Maybe SockAddr
     -> Socket
     -> SockAddr
     -> Int
@@ -193,10 +190,9 @@ fromClientSettings _tcpParams = def
 -- for implementing a UNIX Socket specific
 -- 'Data.ConnectionPool.Internal.ConnectionPool.withConnection'.
 --
--- /Definition changed in version 0.1.3./
+-- /Definition changed in version 0.1.3 and 0.2.1./
 runUnixApp
-    :: MonadBaseControl IO m
-    => (AppDataUnix -> m r)
+    :: (AppDataUnix -> m r)
     -> HandlerParams
     -- ^ Parameters passed down to connection handler @('AppDataUnix' -> m r)@ as
     -- part of definition of 'AppDataUnix'.
@@ -213,10 +209,9 @@ runUnixApp app params sock () = runUnixAppImpl sock bufSize app
 -- 'Data.Streaming.Network.runUnixServer' that provides only construction of
 -- 'AppDataUnix' and passing it to a callback function.
 --
--- /Definition changed in version 0.1.3./
+-- /Definition changed in version 0.1.3 and 0.2.1./
 runUnixAppImpl
-    :: MonadBaseControl IO m
-    => Socket
+    :: Socket
     -> Int
     -- ^ Buffer size used while reading from socket. /Since version 0.1.3./
     -> (AppDataUnix -> m r)
