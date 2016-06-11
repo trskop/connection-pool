@@ -6,43 +6,6 @@
 #
 #   https://github.com/github/gitignore
 
-# {{{ Global/Linux.gitignore ##################################################
-*~
-
-# KDE directory preferences
-.directory
-# }}} Global/Linux.gitignore ##################################################
-
-# {{{ Global/vim.gitignore ####################################################
-[._]*.s[a-w][a-z]
-[._]s[a-w][a-z]
-*.un~
-Session.vim
-.netrwhist
-*~
-# }}} Global/vim.gitignore ####################################################
-
-# {{{ Global/Windows.gitignore ################################################
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
-
-# Folder config file
-Desktop.ini
-
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Windows shortcuts
-*.lnk
-# }}} Global/Windows.gitignore ################################################
-
 # {{{ Global/Archives.gitignore ###############################################
 # It's better to unpack these files and commit the raw source because
 # git has its own built in compression methods.
@@ -73,16 +36,71 @@ $RECYCLE.BIN/
 *.msp
 # }}} Global/Archives.gitignore ###############################################
 
+# {{{ Global/Linux.gitignore ##################################################
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+# }}} Global/Linux.gitignore ##################################################
+
+# {{{ Global/Vim.gitignore ####################################################
+# swap
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+# session
+Session.vim
+# temporary
+.netrwhist
+*~
+# auto-generated tag files
+tags
+# }}} Global/Vim.gitignore ####################################################
+
+# {{{ Global/Windows.gitignore ################################################
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+# }}} Global/Windows.gitignore ################################################
+
 # {{{ Haskell.gitignore #######################################################
 dist
+dist-*
 cabal-dev
 *.o
 *.hi
 *.chi
 *.chs.h
-.virtualenv
+*.dyn_o
+*.dyn_hi
+.hpc
 .hsenv
 .cabal-sandbox/
 cabal.sandbox.config
-cabal.config
+*.prof
+*.aux
+*.hp
+*.eventlog
+.stack-work/
+cabal.project.local
 # }}} Haskell.gitignore #######################################################
