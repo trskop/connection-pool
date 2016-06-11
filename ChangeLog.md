@@ -4,7 +4,7 @@
 ## Version 0.2.1
 
 * Relaxed upper bound on base to include version 4.9.\*.
-* Relaxed bounds for `data-default-class` to include 0.1.\*.
+* Relaxed bounds for [data-default-class][] to include 0.1.\*.
 * Getting rid of compilation warnings on GHC 8 and when compiled with pedantic
   flag.
 * Uploaded to [Hackage][]:
@@ -36,7 +36,7 @@
   packages depending on internal API. (**change**)
 * Heavy inlining of everything. Purpose is to be safe that this library gets
   abstracted away as much as possible. Best result is if only direct references
-  to resource-pool and streaming-commons remain. (**change**)
+  to [resource-pool][] and [streaming-commons][] remain. (**change**)
 * Uploaded to [Hackage][]:
   <http://hackage.haskell.org/package/connection-pool-0.2>
 
@@ -99,13 +99,15 @@
 [between]:
   http://hackage.haskell.org/package/between
   "Function combinator 'between' and derived combinators."
+[data-default-class]:
+  http://hackage.haskell.org/package/data-default-class
+  "Default type class provides a default value (def) of a type."
 [Hackage]:
   http://hackage.haskell.org/
   "HackageDB (or just Hackage) is a collection of releases of Haskell packages."
+[resource-pool]:
+  http://hackage.haskell.org/package/resource-pool
+  "A high-performance striped pooling abstraction for managing resources."
 [streaming-commons]:
   http://hackage.haskell.org/package/streaming-commons
   "Low-dependency functionality commonly needed by various streaming data libraries"
-
-<!--
-  vim: filetype=markdown softtabstop=4 shiftwidth=4 expandtab
--->
