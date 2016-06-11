@@ -4,7 +4,7 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Helper functions that aren't provided by streaming-commons.
--- Copyright:    (c) 2014-2016, Peter Trško
+-- Copyright:    (c) 2014-2016 Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com

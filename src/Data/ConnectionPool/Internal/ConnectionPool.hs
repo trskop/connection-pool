@@ -9,14 +9,12 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  ConnectionPool data type which is a specialized Pool wrapper.
--- Copyright:    (c) 2014-2015, Peter Trško
+-- Copyright:    (c) 2014-2015 Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  DeriveDataTypeable, DeriveGeneric, FunctionalDependencies,
---               FlexibleContexts, MultiParamTypeClasses, NamedFieldPuns,
---               NoImplicitPrelude, RecordWildCards
+-- Portability:  GHC specific language extensions.
 --
 -- Internal packages are here to provide access to internal definitions for
 -- library writers, but they should not be used in application code.

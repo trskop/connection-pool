@@ -1,6 +1,16 @@
 # ChangeLog / ReleaseNotes
 
 
+## Version 0.2.1
+
+* Relaxed upper bound on base to include version 4.9.\*.
+* Relaxed bounds for `data-default-class` to include 0.1.\*.
+* Getting rid of compilation warnings on GHC 8 and when compiled with pedantic
+  flag.
+* Uploaded to [Hackage][]:
+  <http://hackage.haskell.org/package/connection-pool-0.2.1>
+
+
 ## Version 0.2
 
 * Release has backward compatible API with 0.1 branch.

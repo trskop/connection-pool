@@ -3,12 +3,12 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Connection pools for various transport protocols.
--- Copyright:    (c) 2014-2016, Peter Trško
+-- Copyright:    (c) 2014-2016 Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable
--- Portability:  CPP, NoImplicitPrelude
+-- Portability:  GHC specific language extensions.
 --
 -- Connection pools for TCP clients and UNIX Socket clients, later is not
 -- supported on Windows.

@@ -12,14 +12,12 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Family of connection pools specialized by transport protocol.
--- Copyright:    (c) 2014-2016, Peter Trško
+-- Copyright:    (c) 2014-2016 Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  CPP, DeriveDataTypeable, DeriveGeneric, FlexibleInstances,
---               MultiParamTypeClasses, NoImplicitPrelude, PolyKinds,
---               StandaloneDeriving, TypeFamilies
+-- Portability:  GHC specific language extensions.
 --
 -- Module defines type family of connection pools that is later specialised
 -- using type tags (phantom types) to specialize implementation of underlying

@@ -12,13 +12,12 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Type class for common connection pool operations.
--- Copyright:    (c) 2015, Peter Trško
+-- Copyright:    (c) 2015 Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable
--- Portability:  CPP, FlexibleContexts, NoImplicitPrelude, PolyKinds,
---               TypeFamilies
+-- Portability:  GHC specific language extensions.
 --
 -- Type class for common connection pool operations.
 module Data.ConnectionPool.Class

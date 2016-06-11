@@ -5,12 +5,12 @@
 -- Module:       $HEADER$
 -- Description:  HandlerParams data type which is passed to individual
 --               connection.
--- Copyright:    (c) 2015, Peter Trško
+-- Copyright:    (c) 2015 Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  DeriveDataTypeable, DeriveGeneric, NoImplicitPrelude
+-- Portability:  GHC specific language extensions.
 --
 -- Internal packages are here to provide access to internal definitions for
 -- library writers, but they should not be used in application code.

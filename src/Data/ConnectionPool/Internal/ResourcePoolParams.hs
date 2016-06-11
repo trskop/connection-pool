@@ -5,12 +5,12 @@
 -- |
 -- Module:       $HEADER$
 -- Description:  Resource pool construction parameters.
--- Copyright:    (c) 2014, Peter Trško
+-- Copyright:    (c) 2014 Peter Trško
 -- License:      BSD3
 --
 -- Maintainer:   peter.trsko@gmail.com
 -- Stability:    unstable (internal module)
--- Portability:  DeriveDataTypeable, NoImplicitPrelude, RecordWildCards
+-- Portability:  GHC specific language extensions.
 --
 -- Internal packages are here to provide access to internal definitions for
 -- library writers, but they should not be used in application code.
