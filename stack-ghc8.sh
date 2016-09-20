@@ -9,6 +9,7 @@ export PATH="/opt/ghc/8.0.1/bin:/opt/cabal/1.24/bin:${PATH}"
 readonly stackBin='/usr/bin/stack'
 
 # Stackage nighthly now uses GHC 8.0.1.
-readonly yamlFile='stack-nightly.yaml'
+#readonly yamlFile='stack-nightly.yaml'
+readonly yamlFile='stack-lts-7.yaml'
 
 "${stackBin}" --stack-yaml "${yamlFile}" "$@"
