@@ -1,5 +1,5 @@
 name:                   connection-pool
-version:                0.2.1
+version:                0.2.2
 synopsis:
   Connection pool built on top of resource-pool and streaming-commons.
 description:
@@ -143,7 +143,7 @@ source-repository head
   type:                 git
   location:             git://github.com/trskop/connection-pool.git
 
-source-repository this
-  type:                 git
-  location:             git://github.com/trskop/connection-pool.git
-  tag:                  v0.2.1
+--source-repository this
+--  type:                 git
+--  location:             git://github.com/trskop/connection-pool.git
+--  tag:                  v0.2.2
