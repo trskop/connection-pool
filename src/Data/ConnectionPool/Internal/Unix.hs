@@ -55,7 +55,6 @@ import Text.Show (Show)
 import System.IO (IO)
 
 import Network.Socket (Socket)
-import qualified Network.Socket as Socket (sClose)
 
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Function.Between.Strict ((<^@~))
@@ -88,7 +87,8 @@ import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
 import Data.ConnectionPool.Internal.HandlerParams (HandlerParams)
 import Data.ConnectionPool.Internal.ResourcePoolParams (ResourcePoolParams)
 import qualified Data.ConnectionPool.Internal.Streaming as Internal
-    ( fromClientSettingsUnix
+    ( close
+    , fromClientSettingsUnix
     , runUnixApp
     )
 
@@ -142,7 +142,7 @@ createUnixClientPool poolParams unixParams = UnixConnectionPool
     <$> Internal.createConnectionPool handlerParams acquire release poolParams
   where
     acquire = (, ()) <$> getSocketUnix (getPath unixParams)
-    release = Socket.sClose
+    release = Internal.close
     handlerParams = Internal.fromClientSettingsUnix unixParams
 {-# INLINE createUnixClientPool #-}
 

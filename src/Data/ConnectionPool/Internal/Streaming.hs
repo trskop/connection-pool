@@ -47,6 +47,9 @@ module Data.ConnectionPool.Internal.Streaming
     , fromClientSettingsUnix
 #endif
     -- !WINDOWS
+
+    -- * Socket
+    , close
     )
   where
 
@@ -54,7 +57,14 @@ import Data.Int (Int)
 import Data.Maybe (Maybe(Just))
 import System.IO (IO)
 
-import Network.Socket (Socket, SockAddr, sClose)
+import Network.Socket (Socket, SockAddr)
+import qualified Network.Socket as Socket
+#if MIN_VERSION_network(2,4,0)
+    ( close
+#else
+    ( sClose
+#endif
+    )
 import Network.Socket.ByteString (sendAll)
 
 import Data.Default.Class (Default(def))
@@ -152,7 +162,7 @@ runTcpAppImpl localAddr sock addr bufSize app = app AppData
     , AppData.appSockAddr' = addr               -- :: !SockAddr
     , AppData.appLocalAddr' = localAddr         -- :: !(Maybe SockAddr)
 #if MIN_VERSION_streaming_commons(0,1,6)
-    , AppData.appCloseConnection' = sClose sock -- :: !(IO ())
+    , AppData.appCloseConnection' = close sock  -- :: !(IO ())
 #endif
 #if MIN_VERSION_streaming_commons(0,1,12)
     , AppData.appRawSocket' = Just sock         -- :: Maybe Socket
@@ -247,3 +257,18 @@ fromClientSettingsUnix _unixParams = def
 #endif
     -- !WINDOWS
 {-# INLINE fromClientSettingsUnix #-}
+
+-- | Compatibility wrapper around @close\/sClose@.
+--
+-- Package <https://hackage.haskell.org/package/network network> deprecated
+-- @sClose@ in favour of @close@ in version 2.4.0.0.
+--
+-- /Since version 0.2.2./
+close :: Socket -> IO ()
+close =
+#if MIN_VERSION_network(2,4,0)
+    Socket.close
+#else
+    Socket.sClose
+#endif
+{-# INLINE close #-}

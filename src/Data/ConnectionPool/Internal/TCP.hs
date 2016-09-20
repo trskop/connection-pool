@@ -51,7 +51,6 @@ import Text.Show (Show)
 import System.IO (IO)
 
 import Network.Socket (SockAddr, Socket)
-import qualified Network.Socket as Socket (sClose)
 
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Function.Between.Strict ((<^@~))
@@ -82,6 +81,7 @@ import qualified Data.ConnectionPool.Internal.ConnectionPool as Internal
 import Data.ConnectionPool.Internal.HandlerParams (HandlerParams)
 import qualified Data.ConnectionPool.Internal.Streaming as Internal
     ( acquireTcpClientConnection
+    , close
     , fromClientSettings
     , runTcpApp
     )
@@ -138,7 +138,7 @@ createTcpClientPool poolParams tcpParams = TcpConnectionPool
     <$> Internal.createConnectionPool handlerParams acquire release poolParams
   where
     acquire = Internal.acquireTcpClientConnection tcpParams
-    release = Socket.sClose
+    release = Internal.close
     handlerParams = Internal.fromClientSettings tcpParams
 {-# INLINE createTcpClientPool #-}
 
