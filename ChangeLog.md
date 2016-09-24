@@ -1,6 +1,12 @@
 # ChangeLog / ReleaseNotes
 
 
+## Version 0.2.2
+
+* Removed deprecation warnings about the use of `sClose` instead of `close`.
+  (**change**)
+
+
 ## Version 0.2.1
 
 * Relaxed upper bound on base to include version 4.9.\*.
