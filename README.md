@@ -149,17 +149,9 @@ that).
 
 
 
-[Hackage: conduit-extra]:
-  http://hackage.haskell.org/package/conduit-extra
-[Hackage: connection-pool]:
-  http://hackage.haskell.org/package/connection-pool
-[Hackage: resource-pool]:
-  http://hackage.haskell.org/package/resource-pool
-[Hackage: streaming-commons]:
-  http://hackage.haskell.org/package/streaming-commons
-[Haskell.org]:
-  http://www.haskell.org
-  "The Haskell Programming Language"
-[tl;dr Legal: BSD3]:
-  https://tldrlegal.com/license/bsd-3-clause-license-%28revised%29
-  "BSD 3-Clause License (Revised)"
+[Hackage: conduit-extra]: http://hackage.haskell.org/package/conduit-extra
+[Hackage: connection-pool]: http://hackage.haskell.org/package/connection-pool
+[Hackage: resource-pool]: http://hackage.haskell.org/package/resource-pool
+[Hackage: streaming-commons]: http://hackage.haskell.org/package/streaming-commons
+[Haskell.org]: http://www.haskell.org "The Haskell Programming Language"
+[tl;dr Legal: BSD3]: https://tldrlegal.com/license/bsd-3-clause-license-%28revised%29 "BSD 3-Clause License (Revised)"
