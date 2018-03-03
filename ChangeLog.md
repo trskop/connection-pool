@@ -5,6 +5,7 @@
 
 * Removed deprecation warnings about the use of `sClose` instead of `close`.
   (**change**)
+* Bumped upper bound on `streaming-commons` to include 0.2.\* versions.
 
 
 ## Version 0.2.1

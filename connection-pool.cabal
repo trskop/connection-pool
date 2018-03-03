@@ -96,7 +96,7 @@ library
       -- Version 0.2.0.0 of resource-pool was the first that used monad-control
       -- package. At the time of writing (version 0.2.3.0) used subset of API
       -- is stable.
-    , streaming-commons >=0.1.3 && <0.2
+    , streaming-commons >=0.1.3 && <0.3
       -- First version that had getSocketFamilyTCP function and also Earlier
       -- versions have different definition of ClientSettings. Those two things
       -- are actually related.
