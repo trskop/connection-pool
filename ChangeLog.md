@@ -1,6 +1,11 @@
 # ChangeLog / ReleaseNotes
 
 
+## Version 0.2.3 (unreleased)
+
+* Introducing flag `examples` for building example executables.
+
+
 ## Version 0.2.2
 
 * Removed deprecation warnings about the use of `sClose` instead of `close`.
